@@ -928,6 +928,14 @@ button.ring .ring-c b{font-family:var(--f-display);font-size:1.12rem;line-height
 .lib-x{all:unset;cursor:pointer;width:40px;height:40px;display:grid;place-items:center;color:var(--muted);flex:0 0 40px}.lib-in{font-size:.75rem;color:var(--good);white-space:nowrap}.lib-r .btn.sm{min-height:40px}
 .lib-new{margin-top:14px}.pv-sel{gap:16px;margin-bottom:6px}.pv-i{gap:10px;align-items:center;cursor:pointer;min-height:44px}.pv-i input{width:20px;height:20px;flex:0 0 20px}.pv-i.in{opacity:.6}
 .gi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gi-row .field{width:100%}.r-lib{margin:6px 0}
+.kp-days button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px}
+.kp-days button::before{content:"";width:26px;height:26px;border-radius:50%;background:rgba(124,92,255,.08);border:1.5px solid rgba(124,92,255,.15)}
+.kp-days button.pl::before{background:rgba(124,92,255,.14);border:1.5px dashed #7C5CFF}
+.kp-days button.on::before{background:linear-gradient(135deg,#FFE29A,#F5B841);border:0;box-shadow:0 4px 10px -4px #D98E1F}.kp-days button.td::before{outline:2px solid #7C5CFF;outline-offset:2px}
+.kp-days button small{font-size:.74rem;color:#4A5280}.kp-days button:focus-visible{outline:2px solid #7C5CFF;border-radius:8px}
+.kp-rem{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 10px;font-size:.85rem;color:#4A5280}.kp-rem input{height:40px;border-radius:12px;border:1px solid rgba(124,92,255,.3);padding:0 10px;background:#fff;font:inherit}.kp-rem small{font-size:.75rem;flex-basis:100%}
+.buf-card{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#FFF6E0,#FDEBC8);border:1px solid #F3D48B}.buf-card.off{background:linear-gradient(135deg,#E8F6EE,#D9F0E3);border-color:#A9DCBE}.buf-ic{font-size:1.6rem;line-height:1}.buf-card b{display:block;margin-bottom:2px}
+.wday.wbuf{border:1.5px solid #E9B949;background:#FFFBF0}.pill.buf{background:#FDEBC8;color:#8A5A00;font-size:.72rem;margin-inline-start:4px}.wday.wrest{background:#F1F8F4;border-style:dashed}.wday.wpast{opacity:.75}
 .ev-hl{display:flex;gap:14px;align-items:center}
 .ev-money{margin-bottom:10px}.evm-h{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-bottom:8px}.evm-h span{font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:2px}.evm-h b{font-size:1.15rem;color:var(--ink)}
 .evs-l{margin-top:10px;display:flex;flex-direction:column;gap:10px}.evs-t{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-bottom:4px}.evs-r small{font-size:.75rem;color:var(--muted)}.bad-t{color:var(--bad)!important}
@@ -1386,6 +1394,13 @@ const todayK=()=>dkey(),tomorrowK=()=>dkey(addDays(new Date(),1));
 const tasksOn=k=>S.tasks.filter(t=>t.plan===k).sort((a,b)=>(a.order??0)-(b.order??0));
 const inboxTasks=()=>S.tasks.filter(t=>!t.plan&&t.status!=='done').sort((a,b)=>(b.created||0)-(a.created||0));
 const leftovers=()=>S.tasks.filter(t=>t.plan&&t.plan<todayK()&&t.status!=='done');
+/* work week: Sunday to Thursday, Thursday is «يوم الإنهاء» (buffer) that absorbs what piled up, Friday and Saturday off */
+const WORK_DEF={days:[0,1,2,3,4],buffer:4,end:'14:00'};
+const workW=()=>({...WORK_DEF,...(S.settings.work||{})});
+const isOff=d=>!workW().days.includes(d.getDay());
+function weekSun(off=0){const t=new Date();t.setHours(0,0,0,0);const dw=t.getDay(),base=isOff(t)&&dw>workW().buffer?addDays(t,7-dw):addDays(t,-dw);return addDays(base,off*7)}
+const bufferK=()=>dkey(addDays(weekSun(0),workW().buffer));
+const isBufferToday=()=>todayK()===bufferK();
 const nextOrder=k=>tasksOn(k).reduce((m,t)=>Math.max(m,(t.order??0)+1),0);
 function newTask(title,plan=null,extra={}){const t={id:uid(),title:title.trim(),cat:'',date:'',time:'',remind:'',plan,status:'todo',order:plan?nextOrder(plan):0,created:Date.now(),...extra};S.tasks.push(t);return t}
 const ICON={
@@ -1530,7 +1545,7 @@ function pMasai(){
   const fl=S.focusLog[k]||{min:0,count:0};
   const ring=prayerProgress(np,now),tab=['tasks','week','pray','rate','tom'].includes(S.ui.mtab)?S.ui.mtab:'tasks',hid=t=>tab===t?'':'hidden';
   const mine=[...today,...inbox],view=ui.view||'all',shownList=view==='today'?today:view==='later'?inbox:mine;
-  return `<header class="ph mph"><div><p class="eyebrow">خطط يومك بهدوء</p><h1>مَسَار</h1></div><button class="icon-btn" data-act="settings" aria-label="الإعدادات">${GEAR}</button></header>
+  return `<header class="ph mph"><div><p class="eyebrow">خطّط يومك بهدوء..</p><h1>مَسَار</h1></div><button class="icon-btn" data-act="settings" aria-label="الإعدادات">${GEAR}</button></header>
   <section class="hero mhero" aria-live="polite" data-mode="${heroMode.shown||heroMode(np)}" data-next="${heroMode(np)}"><div class="mh-bg night" aria-hidden="true"></div><div class="mh-bg day" aria-hidden="true"></div>${PRAYER_PHOTOS.map(k=>`<div class="mh-bg ph-${k}" aria-hidden="true"></div>`).join('')}
     <div class="mh-top"><div><div class="mh-clock num" id="m-clock" aria-label="الساعة الآن">${clockHTML(now)}</div><div class="mh-date">${fmtDateLong(now)}</div><div class="lbl">${hijri(now)}</div></div><button class="chip" data-act="settings">${esc(city)}</button></div>
     <div class="mh-main">
@@ -1542,15 +1557,18 @@ function pMasai(){
   ${(()=>{const [q,src]=dailyQ();return `<figure class="dq"><span class="dq-mark" aria-hidden="true">❝</span><figcaption class="dq-eye">عبارة اليوم</figcaption><blockquote class="${q.includes('|')?'poem':''}">${q.split('|').map(h=>`<span>${h}</span>`).join('')}</blockquote><div class="dq-f"><span class="dq-src">${src==='عبارة اليوم'?'':src}</span><button class="dq-next" data-act="dq-next" aria-label="عبارة ثانية">↻</button></div></figure>`})()}
   <nav class="qnav" aria-label="أقسام مسار">${[['tasks','المهام',MICON.tasks],['week','الأسبوع',MICON.week],['pray','الصلاة',MICON.pray],['rate','التقييم',MICON.rate],['tom','الغد',MICON.tom]].map(([id,n,ic])=>`<button data-act="mtab" data-t="${id}" aria-pressed="${tab===id}">${ic}<span>${n}</span></button>`).join('')}</nav>
 
-  ${old.length?`<div class="card note-card" ${hid('tasks')}><b>عندك ${old.length} ${old.length>2&&old.length<11?'مهام':'مهمة'} ما اكتملت من أيام سابقة</b>
+  ${(()=>{const bk=bufferK(),tdk=todayK(),buf=tdk===bk,off=isOff(now),canBuf=!off&&tdk<bk,bt=tasksOn(bk).filter(t=>t.status!=='done').length;
+    const ban=buf?`<div class="card buf-card" ${hid('tasks')}><span class="buf-ic" aria-hidden="true">🏁</span><div><b>اليوم يوم الإنهاء</b><p class="sub">خلّص المتراكم من الأسبوع عشان تستانس بإجازتك الجمعة والسبت.${openToday.length?` باقي ${openToday.length} ${openToday.length>2&&openToday.length<11?'مهام':'مهمة'} لليوم.`:' ما باقي شي، ما شاء الله 🌿'}</p></div></div>`
+      :off?`<div class="card buf-card off" ${hid('tasks')}><span class="buf-ic" aria-hidden="true">🌴</span><div><b>إجازة</b><p class="sub">خفّف على نفسك اليوم. ${bt?`عندك ${bt} في يوم الإنهاء الجاي.`:'أسبوعك الجاي يبدأ الأحد.'}</p></div></div>`:'';
+    return ban+(old.length?`<div class="card note-card" ${hid('tasks')}><b>عندك ${old.length} ${old.length>2&&old.length<11?'مهام':'مهمة'} ما اكتملت من أيام سابقة</b>
     <p class="sub">${old.slice(0,3).map(t=>esc(t.title)).join('، ')}${old.length>3?' …':''}</p>
-    <div class="add"><button class="btn" data-act="old-today">انقلها لليوم</button><button class="btn ghost" data-act="old-inbox">أرجعها لـ«لاحقاً»</button></div></div>`:''}
+    <div class="add">${canBuf?`<button class="btn" data-act="old-buf">رحّلها ليوم الإنهاء (الخميس)</button><button class="btn ghost" data-act="old-today">انقلها لليوم</button>`:`<button class="btn" data-act="old-today">انقلها لليوم</button>`}<button class="btn ghost" data-act="old-inbox">أرجعها لـ«لاحقاً»</button></div></div>`:'')})()}
 
   <section class="sec" id="m-today" ${hid('tasks')}>
     ${nowCard(k,np)}
     <div class="sec-h"><h2>مهامي</h2><span class="sub num">${today.length?`أنجزت اليوم ${doneN} من ${today.length}`:''}</span></div>
     <form class="qform one-add" data-form="t-add"><div class="add" style="margin-top:0"><input name="title" id="task-new" aria-label="مهمة جديدة" placeholder="اكتب المهمة واضغط أضف…" required autocomplete="off"><button class="btn">أضف</button></div>
-      <div class="chips when-row"><span class="sub">أضيفها إلى:</span>${[['today','اليوم'],['later','لاحقاً']].map(([v,l])=>`<label class="chip-b radio"><input type="radio" name="when" value="${v}" ${(ui.addToday!==false)===(v==='today')?'checked':''}>${l}</label>`).join('')}</div></form>
+      <div class="chips when-row"><span class="sub">أضيفها إلى:</span>${[['today','اليوم'],['later','لاحقاً'],...(!isOff(now)&&todayK()<bufferK()?[['buf','يوم الإنهاء']]:[])].map(([v,l])=>`<label class="chip-b radio"><input type="radio" name="when" value="${v}" ${v==='buf'?(ui.addWhen==='buf'?'checked':''):ui.addWhen==='buf'?'':(ui.addToday!==false)===(v==='today')?'checked':''}>${l}</label>`).join('')}</div></form>
     <div class="chips mview">${[['all','الكل',mine.length],['today','اليوم',today.length],['later','لاحقاً',inbox.length]].map(([v,n,c])=>`<button class="chip-b" aria-pressed="${view===v}" data-act="m-view" data-v="${v}">${n} <span class="num">${c}</span></button>`).join('')}
       <button class="chip-b sg-toggle" data-act="sugg-toggle" aria-expanded="${ui.sugg}">${ui.sugg?'إخفاء الاقتراحات':'✦ اقتراحات سريعة'}</button></div>
     ${ui.sugg?suggSection():''}
@@ -1651,16 +1669,18 @@ function notify(msg){toast(msg,6000);beep();try{if(!framed&&'Notification' in wi
 /* sections switch like tabs so the bar works even where the page itself can't scroll (inside the app's viewer) */
 function showTab(t){S.ui.mtab=t;commit();const n=$('.qnav');try{if(n&&n.getBoundingClientRect().top<0)n.scrollIntoView({block:'start'})}catch(e){}}
 /* week plan: 7 days from the chosen start, plus anything planned further ahead */
-function weekSection(h){const off=S.ui.wk||0,start=addDays(new Date(),off*7),k0=todayK(),days=[...Array(7)].map((_,i)=>addDays(start,i));
-  const lastK=dkey(days[6]),total=days.reduce((n,d)=>n+tasksOn(dkey(d)).length,0);
-  const later=S.tasks.filter(t=>t.plan&&t.plan>dkey(addDays(new Date(),6))&&!(off&&t.plan<=lastK)).sort((a,b)=>(a.plan+(a.time||'')).localeCompare(b.plan+(b.time||'')));
+function weekSection(h){const off=S.ui.wk||0,start=weekSun(off),k0=todayK(),W=workW(),days=[...Array(7)].map((_,i)=>addDays(start,i)),work=days.filter(d=>W.days.includes(d.getDay())),rest=days.filter(d=>!W.days.includes(d.getDay()));
+  const lastK=dkey(days[6]),total=days.reduce((n,d)=>n+tasksOn(dkey(d)).length,0),cur0=dkey(weekSun(0)),end0=dkey(addDays(weekSun(0),6));
+  const later=S.tasks.filter(t=>t.plan&&t.plan>end0&&!(off&&t.plan<=lastK)).sort((a,b)=>(a.plan+(a.time||'')).localeCompare(b.plan+(b.time||'')));
   const row=t=>`<div class="wrow ${t.status==='done'?'done':''}">${t.kind==='event'?'<span class="evdot" aria-hidden="true"></span>':chk(t.status==='done','t-done',t.id,t.title)}<button class="task-t t" data-act="t-edit" data-id="${t.id}">${esc(t.title)}</button>${t.time?`<span class="pill num">${clockStr(t.time)}</span>`:''}${t.kind==='event'?'<span class="pill ev">حدث</span>':''}<button class="del tdel" data-act="t-x" data-id="${t.id}" aria-label="احذف ${esc(t.title)}">×</button></div>`;
   return `<section class="sec" id="m-week" ${h}>
     <div class="sec-h"><h2>خطة الأسبوع</h2><span class="sub num">${total} بنود</span></div>
-    <div class="wnav"><button class="icon-btn" data-act="wk" data-n="-1" aria-label="الأسبوع السابق" ${off<=0?'disabled':''}>›</button><b>${off===0?'الأيام السبعة القادمة':fmtDay(days[0])+' – '+fmtDay(days[6])}</b><button class="icon-btn" data-act="wk" data-n="1" aria-label="الأسبوع التالي">‹</button></div>
-    <div class="wdays">${days.map(d=>{const k=dkey(d),ts=tasksOn(k);return `<div class="wday ${k===k0?'today':''}">
-      <div class="wday-h"><b>${DAYS[d.getDay()]}</b><span class="sub num">${new Intl.DateTimeFormat(LOC,{day:'numeric',month:'short'}).format(d)}${k===k0?' · اليوم':k===tomorrowK()?' · غداً':''}</span><button class="wadd" data-act="wk-add" data-d="${k}" aria-label="أضف ليوم ${DAYS[d.getDay()]}">+</button></div>
-      ${ts.length?ts.map(row).join(''):'<p class="sub wempty">فاضي</p>'}</div>`}).join('')}</div>
+    <div class="wnav"><button class="icon-btn" data-act="wk" data-n="-1" aria-label="الأسبوع السابق" ${off<=0?'disabled':''}>›</button><b>${off===0?'أسبوع العمل':off===1?'الأسبوع الجاي':fmtDay(days[0])+' – '+fmtDay(days[6])}</b><button class="icon-btn" data-act="wk" data-n="1" aria-label="الأسبوع التالي">‹</button></div>
+    <div class="wdays">${[...work,'rest'].map(d=>{if(d==='rest'){const ts=rest.flatMap(x=>tasksOn(dkey(x)));return `<div class="wday wrest"><div class="wday-h"><b>🌴 ${rest.map(x=>DAYS[x.getDay()]).join(' و')}</b><span class="sub">إجازة</span></div>${ts.length?ts.map(row).join(''):'<p class="sub wempty">ارتاح 🌿</p>'}</div>`}
+      const k=dkey(d),ts=tasksOn(k),bf=d.getDay()===W.buffer,past=k<k0,ld=past?ts.filter(t=>t.status!=='done').length:0;return `<div class="wday ${k===k0?'today':''} ${bf?'wbuf':''} ${past?'wpast':''}">
+      <div class="wday-h"><b>${DAYS[d.getDay()]}${bf?' <span class="pill buf">يوم الإنهاء</span>':''}</b><span class="sub num">${new Intl.DateTimeFormat(LOC,{day:'numeric',month:'short'}).format(d)}${k===k0?' · اليوم':k===tomorrowK()?' · غداً':''}</span><button class="wadd" data-act="wk-add" data-d="${k}" aria-label="أضف ليوم ${DAYS[d.getDay()]}">+</button></div>
+      ${ts.length?ts.map(row).join(''):`<p class="sub wempty">${bf?'محجوز للمتراكم':'فاضي'}</p>`}</div>`}).join('')}</div>
+    <p class="sub" style="margin-top:6px">الخميس يوم الإنهاء: أي مهمة ما خلصت في أيامها ترحّلها له من بطاقة «ما اكتملت»، عشان تبقى الجمعة والسبت إجازة.</p>
     <div class="inner" style="margin-top:12px" id="wk-form-box"><b>أضف مهمة أو حدث لأي تاريخ</b>
       <form class="add" data-form="t-date" id="wk-form"><input name="title" aria-label="اسم المهمة أو الحدث" id="wk-title" placeholder="مثلاً: موعد المستشفى، سفر، اختبار…" required autocomplete="off">
         <input class="sm" type="date" name="date" id="wk-date" value="${dkey(days[0])}" required aria-label="التاريخ"><input class="sm" type="time" name="time" aria-label="الوقت (اختياري)">
@@ -1765,6 +1785,7 @@ const MA={
   't-x':d=>delTasks([d.id],'حُذفت المهمة'),
   't-x-many':d=>delTasks(d.ids.split(','),d.msg),
   undo:()=>{if(!lastDeleted)return;S.tasks.push(...lastDeleted.tasks);Object.assign(S.top,lastDeleted.top);lastDeleted=null;$('#toast').hidden=true;commit();toast('رجعت')},
+  'old-buf':()=>{const k=bufferK();let o=nextOrder(k);const l=leftovers();l.forEach(t=>{t.plan=k;t.order=o++;if(t.status==='doing')t.status='todo'});commit();toast(`رحّلت ${l.length} ليوم الإنهاء`)},
   'old-today':()=>{const k=todayK();let o=nextOrder(k);leftovers().forEach(t=>{t.plan=k;t.order=o++});commit()},
   'old-inbox':()=>{leftovers().forEach(t=>{t.plan=null;if(t.status==='doing')t.status='todo'});commit()},
   'eod-move':(d,el)=>{const n=moveOpen(todayK(),tomorrowK());if(el.dataset.close)closeSheet();commit();toast(`انتقلت ${n} إلى خطة الغد`)},
@@ -1788,7 +1809,7 @@ const MA={
 };
 const MF={
   'sugg-new':v=>{const g=sg(),title=v.title.trim(),cat=SCATS.some(c=>c[0]===v.cat)?v.cat:'home';if(!title)return false;ui.sCat=cat;ui.sOpen=cat;g.items.push({id:'u-'+uid(),cat,title});toast(`انضاف «${title}» إلى ${catName(cat)}`)},
-  't-add':v=>{ui.addToday=v.when!=='later';const t=newTask(v.title,ui.addToday?todayK():null);if(!ui.addToday&&ui.view==='today')ui.view='all';if(ui.addToday&&ui.view==='later')ui.view='all';
+  't-add':v=>{ui.addWhen=v.when;if(v.when==='buf'){const t=newTask(v.title,bufferK());setTimeout(()=>openClassify(t.id,'انضافت ليوم الإنهاء (الخميس)، وتلقاها في «الأسبوع». جاوب سؤالين عشان نرتبها:'),0);return}ui.addToday=v.when!=='later';const t=newTask(v.title,ui.addToday?todayK():null);if(!ui.addToday&&ui.view==='today')ui.view='all';if(ui.addToday&&ui.view==='later')ui.view='all';
     setTimeout(()=>openClassify(t.id,`انضافت ${ui.addToday?'لخطة اليوم':'لـ«لاحقاً»'}. جاوب سؤالين عشان نرتبها:`),0)},
   't-today':v=>{const t=newTask(v.title,todayK());setTimeout(()=>openClassify(t.id,'انضافت لخطة اليوم. جاوب سؤالين عشان نرتبها:'),0)},
   't-tomorrow':v=>{newTask(v.title,tomorrowK())},
@@ -1824,6 +1845,10 @@ function checkReminders(){const now=Date.now(),k=todayK(),f=S.fired;let changed=
   S.tasks.forEach(t=>{if(t.status==='done'||t.remind===''||t.remind==null||!t.time)return;const day=t.date||t.plan;if(!day)return;
     const[h,m]=t.time.split(':').map(Number),d=parseD(day);d.setHours(h,m,0,0);const at=+d-(+t.remind)*6e4,key=`t-${t.id}-${day}-${t.time}-${t.remind}`;
     if(now>=at&&now<at+30*6e4&&!f[key]){f[key]=1;changed=true;notify(`تذكير: ${t.title}${+t.remind?` بعد ${t.remind} دقيقة`:''}`)}});
+  const nd=new Date(now),hm=nd.getHours()*60+nd.getMinutes(),bk=bufferK(),dw=nd.getDay(),W=workW();
+  if(dw===(W.buffer+6)%7&&hm>=20*60&&!f['bw-'+k]){const n=tasksOn(bk).filter(t=>t.status!=='done').length+leftovers().length;f['bw-'+k]=1;changed=true;if(n)notify(`بكرة يوم الإنهاء: عندك ${n} ${n>2&&n<11?'مهام':'مهمة'} تخلصها قبل الإجازة`)}
+  if(k===bk){const[eh,em]=W.end.split(':').map(Number);if(hm>=eh*60+em+30&&!f['bt-'+k]){const n=tasksOn(k).filter(t=>t.status!=='done').length;f['bt-'+k]=1;changed=true;if(n)notify(`باقي ${n} ${n>2&&n<11?'مهام':'مهمة'} وتبدأ إجازتك 🌴`)}}
+  try{const K=khS(),pl=K.plan;if(pl&&pl.time&&(pl.days||[]).includes(dw)&&!K.run){const[ph,pm2]=pl.time.split(':').map(Number);if(hm>=ph*60+pm2&&hm<ph*60+pm2+90&&!f['kh-'+k]&&!K.sessions.some(x=>x.date===dkey(nd))){f['kh-'+k]=1;changed=true;notify('حان وقت خلوتك 🌿 ساعتك الذهبية تنتظرك')}}}catch(e){}
   if(changed)save()}
 function masarTick(){const f=S.focus;
   if(f.mode==='focus'){if(Date.now()>=f.end){focusFinished();return}
@@ -1854,9 +1879,10 @@ const KH_C=2*Math.PI*88;
 function khWeek(){const now=new Date(),st=addDays(now,-((now.getDay()+1)%7));return [...Array(7)].map((_,i)=>dkey(addDays(st,i)))}
 function khProg(){const k=khS(),wk=khWeek(),days=new Set(k.sessions.filter(x=>wk.includes(x.date)).map(x=>x.date)),n=k.sessions.filter(x=>wk.includes(x.date)).length,g=k.weekGoal||3,b=k.bookP,td=dkey();
   const week=`<div class="kp-card"><div class="kp-h"><b>هدف الأسبوع</b><span class="num">${Math.min(n,g)} من ${g} خلوات</span></div>
-    <div class="kp-days">${wk.map((d,i)=>`<i class="${days.has(d)?'on':''} ${d===td?'td':''}"><small>${['سبت','أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة'][i]}</small></i>`).join('')}</div>
+    <div class="kp-days">${wk.map((d,i)=>{const wd=(i+6)%7,pl=((k.plan||{}).days||[]).includes(wd);return `<button class="${days.has(d)?'on':''} ${d===td?'td':''} ${pl?'pl':''}" data-act="kh-pday" data-d="${wd}" aria-pressed="${pl}" aria-label="${pl?'شيل':'خصص'} يوم ${['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'][i]} للخلوة"><small>${['سبت','أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة'][i]}</small></button>`}).join('')}</div>
+    <div class="kp-rem"><span>⏰ ذكّرني الساعة</span><input type="time" id="kh-ptime" value="${(k.plan||{}).time||''}" aria-label="وقت تذكير الخلوة"><small>${((k.plan||{}).days||[]).length?`في ${(k.plan.days.length)} أيام محددة`:'اضغط الأيام فوق تحددها'}</small></div>
     ${bar(Math.min(1,n/g)*100,'')}<p class="kp-s">${n>=g?'🎉 حققت هدف الأسبوع':`باقي ${g-n} ${g-n===1?'خلوة':'خلوات'} على هدفك`}</p>
-    <div class="kp-g">${[2,3,5,7].map(x=>`<button aria-pressed="${g===x}" data-act="kh-wgoal" data-n="${x}" class="num">${x}</button>`).join('')}<small>خلوات بالأسبوع</small></div></div>`;
+    <div class="kp-g">${[2,3,4,5,7].map(x=>`<button aria-pressed="${g===x}" data-act="kh-wgoal" data-n="${x}" class="num">${x}</button>`).join('')}<small>خلوات بالأسبوع</small></div></div>`;
   const book=b?(()=>{const pct=b.total?Math.min(1,b.page/b.total):0,fin=b.total&&b.page>=b.total;return `<div class="kp-card"><div class="kp-h"><b>📖 ${esc(b.title)}</b><button class="kp-x" data-act="kh-book-x" aria-label="شيل الكتاب">×</button></div>
     ${bar(pct*100,'')}<p class="kp-s num">${fin?'🎉 خلصت الكتاب!':`صفحة ${b.page} من ${b.total} · باقي ${b.total-b.page}`}</p>
     ${fin?'':`<form class="kh-nf" data-form="kh-page"><input name="p" inputmode="numeric" placeholder="وصلت صفحة كم؟" autocomplete="off"><button class="kh-go sm">حدّث</button></form>`}</div>`})()
@@ -1875,7 +1901,7 @@ function pWaha(){
       <div class="kh-btns"><button class="kh-pause" data-act="kh-pause">${run.pausedAt?'▶ استئناف':'⏸ إيقاف مؤقت'}</button></div><button class="kh-endl" data-act="kh-stop">إنهاء الجلسة</button></section>`
     :`<section class="kh-timer a-${cur}"><span class="kh-blob" aria-hidden="true"></span>${snd}${ring}
       <div class="kh-pre" role="radiogroup" aria-label="المدة">${[25,45,60].map(m=>`<button role="radio" aria-checked="${k.dur===m}" data-act="kh-dur" data-m="${m}"><b class="num">${m}</b><small>دقيقة</small></button>`).join('')}<button role="radio" aria-checked="${custom}" data-act="kh-custom"><b class="num">${custom?k.dur:'✎'}</b><small>مخصص</small></button></div>
-      ${ui.khCustom?`<form class="kh-cust" data-form="kh-dur"><input name="m" inputmode="numeric" placeholder="كم دقيقة؟ (5 إلى 180)" value="${custom?k.dur:''}" autocomplete="off"><button class="kh-go sm">تم</button></form>`:''}
+      ${ui.khCustom?`<form class="kh-cust" data-form="kh-dur"><input name="m" inputmode="numeric" placeholder="كم دقيقة؟ (25 إلى 60)" value="${custom?k.dur:''}" autocomplete="off"><button class="kh-go sm">تم</button></form>`:''}
       <div class="kh-goal"><p class="kh-q">ماذا ستروي عقلك اليوم؟</p><div class="kh-gs">${KH_PICK.map(a=>`<button class="kh-g ${cur===a[0]?'on':''} ${ui.khPop===a[0]?'pop':''}" data-act="kh-act" data-a="${a[0]}" data-a2="${a[0]}"><span class="kh-ai">${a[1]}</span><b>${a[2]}</b></button>`).join('')}</div>
       ${act[3]?`<input class="kh-det" id="kh-det" data-a="${cur}" value="${esc(k.detail[cur]||'')}" placeholder="${act[3]}" autocomplete="off">`:''}</div>
       <button class="kh-go" data-act="kh-start">ابدأ الخلوة</button></section>`;
@@ -2334,6 +2360,7 @@ function openSettings(){const s=S.settings,el=$('#sheet');
   </div></div>`;el.hidden=false}
 /* importing replaces this device's data; the button turns into a confirm button first (no blocking dialogs) */
 function confirmImport(){const b=$('#s-import-btn');if(S.settings.sample||!b||b.dataset.armed)return true;b.dataset.armed='1';b.textContent='متأكد؟ اضغط للاسترجاع';b.classList.add('danger');const n=$('#s-import-note');if(n)n.hidden=false;return false}
+document.addEventListener('change',e=>{if(e.target.id!=='kh-ptime')return;const k=khS();k.plan=k.plan||{days:[],time:''};k.plan.time=e.target.value;save();toast(e.target.value?`بنذكرك ${clockStr(e.target.value)} في أيام خلوتك`:'وقفت التذكير')});
 document.addEventListener('change',e=>{const t=e.target;if(t.name!=='cat'||!t.closest('[data-form=x-edit]'))return;const subs=t.value==='عطايا'?giftsOf().map(([n])=>n):subsOf(t.value),w=$('#xe-sub');if(!w)return;w.hidden=!(subs&&subs.length);w.querySelector('select').innerHTML=(subs||[]).map(x=>`<option>${esc(x)}</option>`).join('')});
 document.addEventListener('change',e=>{if(e.target.id!=='s-file'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const ta=$('#s-import');if(ta)ta.value=String(r.result||'');toast('جاهز، اضغط «استرجع البيانات»')};r.readAsText(e.target.files[0])});
 function closeSheet(){$('#sheet').hidden=true;$('#sheet').innerHTML=''}
@@ -2537,6 +2564,7 @@ const A={
   'kh-stop':()=>{const k=khS();if(!k.run)return;const end=k.run.pausedAt||Date.now(),min=Math.max(1,Math.round((end-k.run.start)/60000));k.done={act:k.run.act,min:Math.min(min,k.run.dur),at:Date.now(),detail:k.run.detail||''};k.run=null;khChime(true);commit()},
   'kh-cancel':()=>{const k=khS();k.run=null;k.done=null;commit()},
   'kh-skip':()=>{const k=khS();if(k.done){k.sessions.push({id:uid(),date:dkey(),act:k.done.act,min:k.done.min,detail:k.done.detail||undefined});k.done=null}commit()},
+  'kh-pday':d=>{const k=khS(),p=k.plan=k.plan||{days:[],time:'16:30'},n=+d.d;p.days=p.days.includes(n)?p.days.filter(x=>x!==n):[...p.days,n].sort();if(p.days.length)k.weekGoal=p.days.length;commit()},
   'kh-wgoal':d=>{khS().weekGoal=+d.n;commit()},'kh-book-x':()=>{const k=khS();k.bookP=null;commit()},
   'kh-ndel':d=>{const k=khS();k.notes=k.notes.filter(n=>n.id!==d.id);commit()},
   'clear-sample':()=>{const st={...S.settings,sample:false};S=blank();S.settings=st;closeSheet();commit();toast('مسحت الأمثلة، ابدأ ببياناتك')},
@@ -2724,7 +2752,7 @@ const F={
   budget:v=>{const b=num(v.budget);if(!(b>=0)){toast('اكتب الميزانية رقماً');return false}S.budgets[wMonth]=b},
   'rc-save':v=>rcApply(v.raw,true),
   'kh-save':v=>{const k=khS();if(!k.done)return;const n=x=>Math.max(0,Math.round(num(x)||0)),d=k.done,note=(v.note||'').trim(),x={id:uid(),date:dkey(),act:d.act,min:d.act==='lang'&&n(v.mins)?n(v.mins):d.min,detail:d.detail||undefined};if(n(v.pages)){x.pages=n(v.pages);if(k.bookP&&d.act==='read')k.bookP.page=Math.min(k.bookP.total,k.bookP.page+x.pages)}if(n(v.words))x.words=n(v.words);if((v.what||'').trim())x.what=v.what.trim();k.sessions.push(x);if(note)k.notes.push({id:uid(),text:note,date:dkey(),act:d.act});k.done=null;toast(khStreak()>1?`انحفظ ✨ ${khStreak()} أيام متتالية`:'انحفظ إنجازك ✨')},
-  'kh-dur':v=>{const m=Math.round(num(v.m));if(!(m>=5&&m<=180)){toast('اكتب مدة من 5 إلى 180 دقيقة');return false}khS().dur=m;ui.khCustom=false},
+  'kh-dur':v=>{const m=Math.round(num(v.m));if(!(m>=25&&m<=60)){toast('اكتب مدة من 25 إلى 60 دقيقة');return false}khS().dur=m;ui.khCustom=false},
   'kh-book':v=>{const t=(v.t||'').trim(),n=Math.round(num(v.n));if(!t||!(n>0)){toast('اكتب اسم الكتاب وعدد صفحاته');return false}const k=khS();k.bookP={title:t,total:n,page:0};k.detail.read=t;toast(`بالتوفيق في «${t}» 📖`)},
   'kh-page':v=>{const k=khS(),b=k.bookP,n=Math.round(num(v.p));if(!b||!(n>=0)){toast('اكتب رقم الصفحة');return false}b.page=Math.min(b.total,n);if(b.page>=b.total)toast('🎉 مبروك، خلصت الكتاب!')},
   'kh-note':v=>{const t=(v.text||'').trim();if(!t)return false;khS().notes.push({id:uid(),text:t,date:dkey()})},
