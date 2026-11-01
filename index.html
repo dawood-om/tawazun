@@ -936,6 +936,8 @@ button.ring .ring-c b{font-family:var(--f-display);font-size:1.12rem;line-height
 .kp-rem{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 10px;font-size:.85rem;color:#4A5280}.kp-rem input{height:40px;border-radius:12px;border:1px solid rgba(124,92,255,.3);padding:0 10px;background:#fff;font:inherit}.kp-rem small{font-size:.75rem;flex-basis:100%}
 .buf-card{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#FFF6E0,#FDEBC8);border:1px solid #F3D48B}.buf-card.off{background:linear-gradient(135deg,#E8F6EE,#D9F0E3);border-color:#A9DCBE}.buf-ic{font-size:1.6rem;line-height:1}.buf-card b{display:block;margin-bottom:2px}
 .wday.wbuf{border:1.5px solid #E9B949;background:#FFFBF0}.pill.buf{background:#FDEBC8;color:#8A5A00;font-size:.72rem;margin-inline-start:4px}.wday.wrest{background:#F1F8F4;border-style:dashed}.wday.wpast{opacity:.75}
+.bd-btn{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:12px 14px;margin:0 0 12px;border-radius:16px;border:1.5px dashed var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}.bd-btn>span:first-child{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:1.2rem;flex:0 0 40px}.bd-btn b{display:block}.bd-btn small{font-size:.8rem;color:var(--muted)}.bd-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bd-p{display:flex;flex-direction:column;gap:8px;margin:10px 0}.bd-d{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;grid-template-columns:1fr auto;gap:2px 8px}.bd-d .sub{grid-column:1/-1;margin:0}.bd-cat{display:block;font-size:.72rem;color:var(--muted);font-weight:400}
 .ev-hl{display:flex;gap:14px;align-items:center}
 .ev-money{margin-bottom:10px}.evm-h{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-bottom:8px}.evm-h span{font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:2px}.evm-h b{font-size:1.15rem;color:var(--ink)}
 .evs-l{margin-top:10px;display:flex;flex-direction:column;gap:10px}.evs-t{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-bottom:4px}.evs-r small{font-size:.75rem;color:var(--muted)}.bad-t{color:var(--bad)!important}
@@ -1672,9 +1674,10 @@ function showTab(t){S.ui.mtab=t;commit();const n=$('.qnav');try{if(n&&n.getBound
 function weekSection(h){const off=S.ui.wk||0,start=weekSun(off),k0=todayK(),W=workW(),days=[...Array(7)].map((_,i)=>addDays(start,i)),work=days.filter(d=>W.days.includes(d.getDay())),rest=days.filter(d=>!W.days.includes(d.getDay()));
   const lastK=dkey(days[6]),total=days.reduce((n,d)=>n+tasksOn(dkey(d)).length,0),cur0=dkey(weekSun(0)),end0=dkey(addDays(weekSun(0),6));
   const later=S.tasks.filter(t=>t.plan&&t.plan>end0&&!(off&&t.plan<=lastK)).sort((a,b)=>(a.plan+(a.time||'')).localeCompare(b.plan+(b.time||'')));
-  const row=t=>`<div class="wrow ${t.status==='done'?'done':''}">${t.kind==='event'?'<span class="evdot" aria-hidden="true"></span>':chk(t.status==='done','t-done',t.id,t.title)}<button class="task-t t" data-act="t-edit" data-id="${t.id}">${esc(t.title)}</button>${t.time?`<span class="pill num">${clockStr(t.time)}</span>`:''}${t.kind==='event'?'<span class="pill ev">حدث</span>':''}<button class="del tdel" data-act="t-x" data-id="${t.id}" aria-label="احذف ${esc(t.title)}">×</button></div>`;
+  const row=t=>`<div class="wrow ${t.status==='done'?'done':''}">${t.kind==='event'?'<span class="evdot" aria-hidden="true"></span>':chk(t.status==='done','t-done',t.id,t.title)}<button class="task-t t" data-act="t-edit" data-id="${t.id}">${esc(t.title)}${t.src==='bidaya'&&t.cat?`<small class="bd-cat">${esc(t.cat)}</small>`:''}</button>${t.time?`<span class="pill num">${clockStr(t.time)}</span>`:''}${t.kind==='event'?'<span class="pill ev">حدث</span>':''}<button class="del tdel" data-act="t-x" data-id="${t.id}" aria-label="احذف ${esc(t.title)}">×</button></div>`;
   return `<section class="sec" id="m-week" ${h}>
     <div class="sec-h"><h2>خطة الأسبوع</h2><span class="sub num">${total} بنود</span></div>
+    <button class="bd-btn" data-act="bd-open"><span aria-hidden="true">⇩</span><span><b>استيراد جدول الأسبوع</b><small>من صفحة «بداية»</small></span></button>
     <div class="wnav"><button class="icon-btn" data-act="wk" data-n="-1" aria-label="الأسبوع السابق" ${off<=0?'disabled':''}>›</button><b>${off===0?'أسبوع العمل':off===1?'الأسبوع الجاي':fmtDay(days[0])+' – '+fmtDay(days[6])}</b><button class="icon-btn" data-act="wk" data-n="1" aria-label="الأسبوع التالي">‹</button></div>
     <div class="wdays">${[...work,'rest'].map(d=>{if(d==='rest'){const ts=rest.flatMap(x=>tasksOn(dkey(x)));return `<div class="wday wrest"><div class="wday-h"><b>🌴 ${rest.map(x=>DAYS[x.getDay()]).join(' و')}</b><span class="sub">إجازة</span></div>${ts.length?ts.map(row).join(''):'<p class="sub wempty">ارتاح 🌿</p>'}</div>`}
       const k=dkey(d),ts=tasksOn(k),bf=d.getDay()===W.buffer,past=k<k0,ld=past?ts.filter(t=>t.status!=='done').length:0;return `<div class="wday ${k===k0?'today':''} ${bf?'wbuf':''} ${past?'wpast':''}">
@@ -1690,6 +1693,28 @@ function weekSection(h){const off=S.ui.wk||0,start=weekSun(off),k0=todayK(),W=wo
     <div class="sec-h" style="margin-top:16px"><b>القادم بعد هذا الأسبوع</b><span class="sub num">${later.length}</span></div>
     <div class="list">${later.map(t=>`<div class="item">${t.kind==='event'?'<span class="evdot" aria-hidden="true"></span>':chk(t.status==='done','t-done',t.id,t.title)}<div class="grow"><button class="task-t ${t.status==='done'?'t':''}" data-act="t-edit" data-id="${t.id}">${esc(t.title)}</button><div class="meta"><span class="pill acc num">${fmtDay(parseD(t.plan))}</span>${t.time?`<span class="pill num">${clockStr(t.time)}</span>`:''}${t.kind==='event'?'<span class="pill ev">حدث</span>':''}</div></div><button class="del tdel" data-act="t-x" data-id="${t.id}" aria-label="احذف ${esc(t.title)}">×</button></div>`).join('')||'<div class="empty">ما فيه شي مخطط بعد هذا الأسبوع.</div>'}</div>
   </section>`}
+
+/* استيراد جدول الأسبوع من «بداية»: reads many JSON shapes (days array, object keyed by day, flat task list) and puts each task on its day of the work week */
+const BD_DAYS=[['احد','الاحد','sun','sunday'],['اثنين','الاثنين','mon','monday'],['ثلاثاء','الثلاثاء','tue','tuesday'],['اربعاء','الاربعاء','wed','wednesday'],['خميس','الخميس','thu','thursday'],['جمعه','الجمعه','fri','friday'],['سبت','السبت','sat','saturday']];
+function bdDay(v){if(v==null)return null;if(typeof v==='number'&&v>=0&&v<7)return v;const t=rnorm(String(v));if(/^\d{4}-\d{2}-\d{2}/.test(String(v)))return String(v).slice(0,10);const i=BD_DAYS.findIndex(a=>a.some(x=>t===x||t.startsWith(x+' ')||t.includes(x)));return i<0?null:i}
+const bdPick=(o,ks)=>{for(const k of ks)if(o&&o[k]!=null&&o[k]!=='')return o[k]};
+function bdTask(x,day,cat0){if(typeof x==='string')return{title:x.trim(),day,cat:cat0||''};if(!x||typeof x!=='object')return null;
+  const title=bdPick(x,['title','name','text','task','label','activity','نشاط','المهمة','مهمة','عنوان']);if(!title)return null;
+  return{title:String(title).trim(),day:bdPick(x,['date','day','يوم','اليوم','التاريخ'])??day,cat:String(bdPick(x,['category','cat','type','section','group','التصنيف','تصنيف','نوع','القسم'])||cat0||''),time:String(bdPick(x,['time','start','الوقت','وقت'])||''),done:!!bdPick(x,['done','completed','منجز'])}}
+function bdParse(raw){let j;try{j=JSON.parse(String(raw).trim().replace(/^```(json)?|```$/g,''))}catch(e){return{err:'الكود مب JSON صحيح. تأكد إنك نسخته كامل.'}}
+  const out=[],walk=(v,day,cat)=>{if(Array.isArray(v)){v.forEach(x=>{if(x&&typeof x==='object'&&!Array.isArray(x)){const inner=bdPick(x,['tasks','items','activities','list','المهام','الأنشطة']);if(Array.isArray(inner)){walk(inner,bdPick(x,['date','day','name','يوم','اليوم'])??day,bdPick(x,['category','cat','title','التصنيف'])&&!bdPick(x,['day','date','يوم','اليوم'])?String(bdPick(x,['category','cat','title','التصنيف'])):cat);return}}const t=bdTask(x,day,cat);if(t)out.push(t)});return}
+    if(v&&typeof v==='object'){const inner=bdPick(v,['days','week','schedule','tasks','items','الأيام','الجدول','المهام']);if(inner&&inner!==v&&typeof inner==='object'){walk(inner,day,cat);return}
+      Object.entries(v).forEach(([k,x])=>{const d=bdDay(k);if(d!=null&&typeof x==='object')walk(x,d,cat);else if(Array.isArray(x)||typeof x==='object')walk(x,day,k)})}};
+  walk(j,null,'');const start=weekSun(0),rows=out.filter(t=>t.title).map(t=>{let d=bdDay(t.day),k=null;if(typeof d==='string')k=d;else if(d!=null)k=dkey(addDays(start,d));return{...t,k}});
+  return rows.length?{rows}:{err:'ما لقيت مهام في الكود.'}}
+function bdPrev(){const box=$('#bd-prev'),ta=$('#bd-in');if(!box||!ta)return;if(!ta.value.trim()){box.innerHTML='';return}const r=bdParse(ta.value);if(r.err){box.innerHTML=`<p class="rc-none">${r.err}</p>`;return}
+  const by={};r.rows.forEach(t=>{const k=t.k||'later';(by[k]=by[k]||[]).push(t)});
+  box.innerHTML=`<div class="bd-p">${Object.keys(by).sort().map(k=>`<div class="bd-d"><b>${k==='later'?'بدون يوم ← لاحقاً':fmtDay(parseD(k))}</b><span class="num">${by[k].length}</span><p class="sub">${by[k].slice(0,4).map(t=>esc(t.title)+(t.cat?` <small>(${esc(t.cat)})</small>`:'')).join('، ')}${by[k].length>4?' …':''}</p></div>`).join('')}</div><p class="sub num">${r.rows.length} مهمة جاهزة للاستيراد.</p>`}
+function openBidaya(){openSheet(`<p class="sub">من صفحة «بداية» اضغط «نسخ الكود»، والصقه هنا. كل مهمة تنحط في يومها من أسبوع العمل الحالي، واللي بدون يوم تروح «لاحقاً».</p>
+  <form data-form="bd-import"><textarea class="field" id="bd-in" name="raw" rows="7" placeholder='{"days":[{"day":"الأحد","tasks":[{"title":"ورد قرآني","category":"ورد قرآني وكتاب","time":"16:30"}]}]}' dir="ltr" style="text-align:left;font-family:ui-monospace,monospace;font-size:.85rem"></textarea>
+  <div id="bd-prev"></div>
+  <label class="chk-l"><input type="checkbox" name="rep" value="1" checked> استبدل الاستيراد السابق لنفس الأسبوع (المهام اللي ما خلصت بس)</label>
+  <button class="btn" style="width:100%;margin-top:8px">تطبيق الاستيراد</button></form>`,'استيراد جدول الأسبوع')}
 /* delete without a confirm step; the toast offers «تراجع» for a few seconds */
 let lastDeleted=null;
 /* renaming the task just added from a suggestion; an empty name keeps the old one */
@@ -1785,6 +1810,7 @@ const MA={
   't-x':d=>delTasks([d.id],'حُذفت المهمة'),
   't-x-many':d=>delTasks(d.ids.split(','),d.msg),
   undo:()=>{if(!lastDeleted)return;S.tasks.push(...lastDeleted.tasks);Object.assign(S.top,lastDeleted.top);lastDeleted=null;$('#toast').hidden=true;commit();toast('رجعت')},
+  'bd-open':()=>openBidaya(),
   'old-buf':()=>{const k=bufferK();let o=nextOrder(k);const l=leftovers();l.forEach(t=>{t.plan=k;t.order=o++;if(t.status==='doing')t.status='todo'});commit();toast(`رحّلت ${l.length} ليوم الإنهاء`)},
   'old-today':()=>{const k=todayK();let o=nextOrder(k);leftovers().forEach(t=>{t.plan=k;t.order=o++});commit()},
   'old-inbox':()=>{leftovers().forEach(t=>{t.plan=null;if(t.status==='doing')t.status='todo'});commit()},
@@ -1813,6 +1839,10 @@ const MF={
     setTimeout(()=>openClassify(t.id,`انضافت ${ui.addToday?'لخطة اليوم':'لـ«لاحقاً»'}. جاوب سؤالين عشان نرتبها:`),0)},
   't-today':v=>{const t=newTask(v.title,todayK());setTimeout(()=>openClassify(t.id,'انضافت لخطة اليوم. جاوب سؤالين عشان نرتبها:'),0)},
   't-tomorrow':v=>{newTask(v.title,tomorrowK())},
+  'bd-import':v=>{const r=bdParse(v.raw||'');if(r.err){toast(r.err,3500);return false}const st=dkey(weekSun(0)),en=dkey(addDays(weekSun(0),6));
+    if(v.rep)S.tasks=S.tasks.filter(t=>!(t.src==='bidaya'&&t.status!=='done'&&(!t.plan||(t.plan>=st&&t.plan<=en))));
+    let n=0,sk=0;r.rows.forEach(x=>{const plan=x.k||null;if(S.tasks.some(t=>t.plan===plan&&rnorm(t.title)===rnorm(x.title))){sk++;return}const tm=/^\d{1,2}:\d{2}/.test(x.time)?x.time.slice(0,5).padStart(5,'0'):'';newTask(x.title,plan,{cat:x.cat.slice(0,30),time:tm,src:'bidaya',status:x.done?'done':'todo'});n++});
+    S.ui.mtab='week';S.ui.wk=0;closeSheet();toast(`استوردت ${n} ${n>2&&n<11?'مهام':'مهمة'} من «بداية»${sk?`، وتخطيت ${sk} موجودة`:''}`,3500)},
   't-date':v=>{if(!v.date){toast('اختر التاريخ');return false}newTask(v.title,v.date,{time:v.time||'',kind:v.kind==='event'?'event':'task'});toast(`انضاف ${v.kind==='event'?'الحدث':'المهمة'} يوم ${fmtDay(parseD(v.date))}`)},
   'f-new':v=>{const t=newTask(v.title,todayK());startFocus(t.id);return false},
   'f-custom':v=>{const n=Math.round(num(v.min));if(!(n>=1&&n<=180)){toast('اكتب مدة من 1 إلى 180 دقيقة');return false}S.settings.focusMin=n},
@@ -1823,7 +1853,7 @@ const MF={
 };
 document.addEventListener('keydown',e=>{const t=e.target;if((e.key==='Enter'||e.key===' ')&&t.matches&&t.matches('[role=button][data-act]:not(button)')){e.preventDefault();t.click()}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='sp-title'){e.preventDefault();e.target.blur()}});
-document.addEventListener('input',e=>{if(e.target.id==='lib-q'){const l=$('#lib-list');if(l)l.innerHTML=libList(e.target.value);return}if(e.target.id==='kh-det'){khS().detail[e.target.dataset.a]=e.target.value;save();return}if(e.target.id==='rc-in'){rcPrev();return}if(e.target.id==='b-q'){const q=rnorm(e.target.value.trim());document.querySelectorAll('.bl-card').forEach(c=>{c.hidden=!!q&&!c.dataset.t.includes(q)});document.querySelectorAll('.bp-tile').forEach(t=>{t.classList.toggle('dim',!!q&&!rnorm(t.textContent).includes(q))});return}if(e.target.id!=='r-q')return;const q=rnorm(e.target.value.trim());rSug(e.target.value.trim());document.querySelectorAll('.pcard').forEach(c=>{c.hidden=!!q&&!c.dataset.t.includes(q)});document.querySelectorAll('.pgrp').forEach(g=>{g.hidden=!g.querySelector('.pcard:not([hidden])')})});
+document.addEventListener('input',e=>{if(e.target.id==='bd-in'){bdPrev();return}if(e.target.id==='lib-q'){const l=$('#lib-list');if(l)l.innerHTML=libList(e.target.value);return}if(e.target.id==='kh-det'){khS().detail[e.target.dataset.a]=e.target.value;save();return}if(e.target.id==='rc-in'){rcPrev();return}if(e.target.id==='b-q'){const q=rnorm(e.target.value.trim());document.querySelectorAll('.bl-card').forEach(c=>{c.hidden=!!q&&!c.dataset.t.includes(q)});document.querySelectorAll('.bp-tile').forEach(t=>{t.classList.toggle('dim',!!q&&!rnorm(t.textContent).includes(q))});return}if(e.target.id!=='r-q')return;const q=rnorm(e.target.value.trim());rSug(e.target.value.trim());document.querySelectorAll('.pcard').forEach(c=>{c.hidden=!!q&&!c.dataset.t.includes(q)});document.querySelectorAll('.pgrp').forEach(g=>{g.hidden=!g.querySelector('.pcard:not([hidden])')})});
 document.addEventListener('input',e=>{if(e.target.id!=='inbox-q')return;const q=e.target.value.trim();
   document.querySelectorAll('#m-today .task').forEach(r=>r.hidden=q&&!r.dataset.title.includes(q))});
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='sp-title'){const i=e.target,t=S.tasks.find(x=>x.id===i.dataset.id),v=i.value.trim();if(t&&v&&v!==t.title){spRename();const r=document.querySelector(`.task[data-id="${t.id}"] .task-t`);if(r)r.textContent=v;toast('تعدّل الاسم')}return}if(id==='rate-good'||id==='rate-better'){const r=S.ratings[todayK()]=S.ratings[todayK()]||{};r[id==='rate-good'?'good':'better']=e.target.value.trim();save()}});
