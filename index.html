@@ -1277,12 +1277,10 @@ button,a,label,input,select,textarea,[role=button]{touch-action:manipulation;-we
 .bd-note{display:block;font-size:.68rem;font-weight:400;color:#4F6A65;background:rgba(255,255,255,.7);border-radius:6px;padding:1px 6px;margin:2px 0 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .bd-exp .bd-note{white-space:normal}
 
-/* v118 غوازي: legend under the ring, clear amounts */
-@media (max-width:520px){.ring-w{flex-direction:column;align-items:stretch;gap:10px}.ring-w .ring{align-self:center}
-.ring-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}
-.ring-k{display:grid!important;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:6px;row-gap:1px;align-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12)!important;border-radius:12px;padding:6px 9px!important}
-.ring-k i{grid-row:1;width:8px!important;height:8px!important}.ring-k span{grid-row:1;grid-column:2;font-size:.74rem;color:var(--hero-muted)}
-.ring-k b{grid-row:2;grid-column:1/-1;font-size:1rem;font-weight:700;color:var(--hero-ink,#fff);direction:ltr;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:.01em;white-space:nowrap;overflow:visible}
+/* v119 غوازي: same side layout, legend amounts never clipped */
+.ring-l{min-width:0;overflow:hidden;gap:1px!important}.ring-k{width:100%;min-width:0;box-sizing:border-box;min-height:0!important;line-height:1.35;padding:3px 0!important}
+.ring-k b{flex:none;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:.8rem;direction:ltr}
+@media (max-width:440px){.ring-w{gap:10px}.ring{flex-basis:118px!important;width:118px!important;height:118px!important}button.ring .ring-c b{font-size:.95rem}button.ring .ring-c small{font-size:.5rem!important;max-width:64px!important;white-space:nowrap}button.ring .ring-c small:last-child{display:none}.ring-k{font-size:.72rem;gap:5px}.ring-k b{font-size:.74rem}}
 button.ring .ring-c small{font-size:.55rem;max-width:74px;line-height:1.3}
 
 /* v118 مسار: carry, tools, done log, exports */
