@@ -1329,6 +1329,8 @@ button.ring .ring-c small{font-size:.55rem;max-width:74px;line-height:1.3}
 .ig2-r{display:grid;grid-template-columns:1fr 140px 1fr;align-items:center;height:118px;overflow:hidden}
 .ig2-m{position:relative;width:140px;height:118px}.ig2-m svg{display:block}.ig2-d{position:absolute;top:50%;width:88px;margin-top:-18px;text-align:center;font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.3);line-height:36px}
 .ig2-s{padding:0 6px;font-size:.74rem;color:#5F6B78}.ig2-s b{display:block;color:var(--c);font-size:1.05rem;font-weight:800}.ig2-s small{display:block;color:var(--c);font-size:.78rem;margin-bottom:3px;opacity:.9}.ig2-s{min-width:0}.ig2-s p{margin:1px 0;line-height:1.4;white-space:nowrap;overflow:hidden}.ig2-s p.dn{text-decoration:line-through;color:#9AA4AE}.ig2-s i{font-style:normal;font-size:.66rem;color:var(--c)}.ig2-s .more{color:#9AA4AE}.ig2-s .ev{color:#7A4FB0}
+.wp-em{margin:-4px 0 6px;text-align:center;font-size:.72rem;font-weight:700;color:#8A5A00;background:#FDE9B8;border-radius:99px;padding:1px 8px}.wp-c.em{border:3px solid #E9B949}
+.ig2-em{display:inline-block;font-size:.66rem;font-weight:700;color:#8A5A00;background:#FDE9B8;border-radius:99px;padding:0 8px;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -1579,7 +1581,7 @@ const WORK_DEF={days:[0,1,2,3,4],buffer:null,end:'14:00'};
 const workW=()=>({...WORK_DEF,...(S.settings.work||{})});
 const isOff=d=>!workW().days.includes(d.getDay());
 function weekSun(off=0){const t=new Date();t.setHours(0,0,0,0);const dw=t.getDay(),base=isOff(t)&&dw>Math.max(...workW().days)?addDays(t,7-dw):addDays(t,-dw);return addDays(base,off*7)}
-const bufDay=id=>{const w=(S.weeks||{})[id];return w&&w.status==='approved'&&w.emergency!=null&&w.emergency>=0?w.emergency:null};
+const bufDay=id=>{const w=(S.weeks||{})[id];return w&&w.emergency!=null&&w.emergency>=0?w.emergency:null};
 const bufferK=()=>{const b=bufDay(dkey(weekSun(0)));return b==null?null:dkey(addDays(weekSun(0),b))};
 const isBufferToday=()=>todayK()===bufferK();
 const nextOrder=k=>tasksOn(k).reduce((m,t)=>Math.max(m,(t.order??0)+1),0);
@@ -2011,12 +2013,12 @@ function wkData(){const off=S.ui.wk||0,start=weekSun(off),L=S.doneLog||{},W=work
     return{d,k,off:!W.days.includes(d.getDay()),ts,ev:tasksOn(k).filter(t=>t.kind==='event'),done:ts.filter(t=>t.status==='done').length+gone.length,total:ts.length+gone.length,gone}});
   const total=days.reduce((a,x)=>a+x.total,0),done=days.reduce((a,x)=>a+x.done,0),by={};days.forEach(x=>{x.ts.forEach(t=>{const c=t.planItem?catOf(t.pcat)[0]+' '+catOf(t.pcat)[1].split(' ')[0]:(t.cat||'أخرى');const o=by[c]=by[c]||[0,0];o[0]++;if(t.status==='done')o[1]++});x.gone.forEach(([,g])=>{const c=g.c||'أخرى';const o=by[c]=by[c]||[0,0];o[0]++;o[1]++})});
   const min=days.reduce((a,x)=>a+x.ts.filter(t=>t.status==='done').reduce((b,t)=>b+(+t.dur||0),0)+x.gone.reduce((b,[,g])=>b+(g.m||0),0),0);
-  return{start,days,total,done,by,min,range:`${fmtDay(start)} – ${fmtDay(addDays(start,6))}`}}
+  return{start,em:bufDay(dkey(start)),days,total,done,by,min,range:`${fmtDay(start)} – ${fmtDay(addDays(start,6))}`}}
 const WK_FLOWER=(c1,c2,c3)=>`<svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><g transform="translate(60 60)">${[0,60,120,180,240,300].map(r=>`<path d="M0 0 C 14 -18 12 -44 0 -54 C -12 -44 -14 -18 0 0Z" fill="${r%120?c2:c1}" stroke="${c3}" stroke-width="1.5" transform="rotate(${r})"/>`).join('')}<path d="M-46 30 C -70 26 -84 44 -92 60 C -70 64 -54 50 -46 30Z" fill="${c3}"/><path d="M40 36 C 60 44 64 66 62 84 C 44 76 36 58 40 36Z" fill="${c3}"/><circle r="11" fill="#2F4F7A"/>${[...Array(10)].map((_,i)=>`<circle cx="${(Math.cos(i*.63)*9).toFixed(1)}" cy="${(Math.sin(i*.63)*9).toFixed(1)}" r="2" fill="#D9A441"/>`).join('')}</g></svg>`;
 /* week image: a planner sheet (cards per day, Sunday first, notes box) */
 function wkImgBox(){const D=wkData(),box=document.createElement('div');box.className='mx-exp wp';box.dir='rtl';const tones=['t1','t2','t3'];
   const mon=new Intl.DateTimeFormat(LOC,{month:'long',year:'numeric'}).format(D.start);
-  const card=(x,i)=>`<div class="wp-c ${tones[i%3]} ${x.off?'off':''}"><p class="wp-dn">${BD_DAYN[x.d.getDay()]} <small class="num">${x.d.getDate()}</small></p>
+  const card=(x,i)=>`<div class="wp-c ${tones[i%3]} ${D.em===i?'em':''}"><p class="wp-dn">${BD_DAYN[x.d.getDay()]} <small class="num">${x.d.getDate()}</small></p>${D.em===i?'<p class="wp-em">⚡ يوم الطوارئ</p>':''}
     ${[...x.ev.map(t=>`<p class="wp-i ev">📅 ${t.time?`<i class="num">${clockStr(t.time)}</i> `:''}${esc(t.title)}</p>`),...x.ts.map(t=>`<p class="wp-i ${t.status==='done'?'dn':''}"><span>${t.status==='done'?'✓':'○'}</span> ${t.time?`<i class="num">${clockStr(t.time)}</i> `:''}${esc(t.title)}</p>`),...x.gone.map(([,g])=>`<p class="wp-i dn"><span>✓</span> ${esc(g.t)}</p>`)].join('')||`<p class="wp-mt">للتخطيط ✎</p>`}</div>`;
   const notes=D.days.flatMap(x=>x.ts.filter(t=>t.note).map(t=>`${BD_DAYN[x.d.getDay()].replace('ال','')}: ${t.title}، ${t.note}`)).slice(0,4);
   box.innerHTML=`<div class="wp-fl a">${WK_FLOWER('#A9C8E8','#DCE9F6','#2F5C8F')}</div><div class="wp-fl b">${WK_FLOWER('#C9DCEF','#EEF4FA','#355F92')}</div>
@@ -2028,11 +2030,11 @@ const IG_COL=['#1E6FA8','#22A7A0','#3BAF6E','#8DBB2E','#F0AE2A','#EE8236','#E14F
 function wkInfoBox(){const D=wkData(),pct=D.total?Math.round(D.done/D.total*100):0,box=document.createElement('div');box.className='mx-exp ig2';box.dir='rtl';
   const H=118,row=(x,i)=>{const c=IG_COL[i],R=i%2===0,bx=R?118:22,m=H/2,cv=(x0,b)=>`M${x0} 0 C ${x0} ${m*.55}, ${b} ${m*.45}, ${b} ${m} C ${b} ${m*1.55}, ${x0} ${m*1.45}, ${x0} ${H}`,d=cv(70,bx),ox=R?36:-36,lx=bx;
     const list=[...x.ts.map(t=>({t:t.title,dn:t.status==='done',tm:t.time})),...x.gone.map(([,g])=>({t:g.t,dn:1}))],sh=list.slice(0,2);
-    const side=`<div class="ig2-s" style="--c:${c}"><b>${x.total?`${x.done} من ${x.total} ✓`:'للتخطيط'}</b><small>${x.total?`${Math.round(x.done/x.total*100)}% إنجاز`:'يوم مفتوح لمهامك'}</small>${sh.map(o=>`<p class="${o.dn?'dn':''}">${o.dn?'✓':'○'} ${o.tm?`<i class="num">${clockStr(o.tm)}</i> `:''}${esc(o.t.length>(o.tm?16:22)?o.t.slice(0,o.tm?15:21).trim()+'…':o.t)}</p>`).join('')}${list.length>2?`<p class="more num">+ ${list.length-2} ${list.length-2>2&&list.length-2<11?'مهام ثانية':'مهمة ثانية'}</p>`:''}${x.ev.length?`<p class="ev">📅 ${esc(x.ev[0].title)}</p>`:''}</div>`;
+    const side=`<div class="ig2-s" style="--c:${c}">${D.em===i?'<span class="ig2-em">⚡ يوم الطوارئ</span>':''}<b>${x.total?`${x.done} من ${x.total} ✓`:'للتخطيط'}</b><small>${x.total?`${Math.round(x.done/x.total*100)}% إنجاز`:'يوم مفتوح لمهامك'}</small>${sh.map(o=>`<p class="${o.dn?'dn':''}">${o.dn?'✓':'○'} ${o.tm?`<i class="num">${clockStr(o.tm)}</i> `:''}${esc(o.t.length>(o.tm?16:22)?o.t.slice(0,o.tm?15:21).trim()+'…':o.t)}</p>`).join('')}${list.length>2?`<p class="more num">+ ${list.length-2} ${list.length-2>2&&list.length-2<11?'مهام ثانية':'مهمة ثانية'}</p>`:''}${x.ev.length?`<p class="ev">📅 ${esc(x.ev[0].title)}</p>`:''}</div>`;
     const mid=`<div class="ig2-m"><svg viewBox="0 0 140 ${H}" width="140" height="${H}" style="overflow:visible">${i===0?`<circle cx="70" cy="-6" r="16" fill="${c}"/>`:''}<path d="${d}" fill="none" stroke="${c}" stroke-width="54" stroke-linecap="butt"/><path d="${d}" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="10" stroke-linecap="round" transform="translate(${R?-10:10} 0)"/></svg><span class="ig2-d" style="left:${lx-44}px;--c:${c}">${BD_DAYN[x.d.getDay()].replace('ال','')}</span></div>`;
     return `<div class="ig2-r">${R?side+mid+'<div></div>':'<div></div>'+mid+side}</div>`};
   box.innerHTML=`<h1 class="ig2-t"><b>إنفوجرافيك</b> الأسبوع</h1><div class="ig2-dots">${['#C2185B','#9C3FA0','#6F4BB5','#4A55B0','#1E6FA8','#1FA9D6','#22A7A0','#3BAF6E','#8DBB2E','#F0AE2A','#EE8236','#E14F4A'].map(c=>`<i style="background:${c}"></i>`).join('')}</div>
-  <p class="ig2-sub num">${D.range} · أنجزت <b>${D.done}</b> من <b>${D.total}</b> (${pct}%)${D.min?` · ${fmtDur(D.min)}`:''}</p>
+  <p class="ig2-sub num">${D.range}${D.em!=null?` · ⚡ الطوارئ: ${BD_DAYN[D.em]}`:''} · أنجزت <b>${D.done}</b> من <b>${D.total}</b> (${pct}%)${D.min?` · ${fmtDur(D.min)}`:''}</p>
   <div class="ig2-w">${D.days.map(row).join('')}</div><p class="mx-f">توازن · مسار</p>`;return box}
 function dlImgBox(){const r=ui.dlR||'w',D=doneData(r),box=document.createElement('div');box.className='mx-exp';box.dir='rtl';
   box.innerHTML=`<div class="mx-h"><div><small>سجل الإنجاز · ${{d:'اليوم',w:'الأسبوع',m:'آخر 30 يوم'}[r]}</small><b class="num">${fmtDay(parseD(D.a))}${D.a!==D.b?' – '+fmtDay(parseD(D.b)):''}</b></div><span class="num">${D.n} ✓</span></div>`+D.days.map(k=>`<div class="mx-d"><div class="mx-dn"><b>${DAYS[parseD(k).getDay()]}</b><small class="num">${parseD(k).getDate()}</small></div><div class="mx-dl">${Object.values(D.L[k]).map(x=>`<p class="dn"><span>✓</span>${esc(x.t)}</p>`).join('')}</div></div>`).join('')+'<p class="mx-f">توازن · مسار</p>';return box}
