@@ -1593,7 +1593,8 @@ const leftovers=()=>S.tasks.filter(t=>t.plan&&t.plan<todayK()&&t.status!=='done'
 const WORK_DEF={days:[0,1,2,3,4],buffer:null,end:'14:00'};
 const workW=()=>({...WORK_DEF,...(S.settings.work||{})});
 const isOff=d=>!workW().days.includes(d.getDay());
-function weekSun(off=0){const t=new Date();t.setHours(0,0,0,0);const dw=t.getDay(),base=isOff(t)&&dw>Math.max(...workW().days)?addDays(t,7-dw):addDays(t,-dw);return addDays(base,off*7)}
+/* the week is always Sunday to Saturday; Friday and Saturday stay in the current week (they are planning days) */
+function weekSun(off=0){const t=new Date();t.setHours(0,0,0,0);return addDays(t,-t.getDay()+off*7)}
 const bufDay=id=>{const w=(S.weeks||{})[id];return w&&w.emergency!=null&&w.emergency>=0?w.emergency:null};
 const bufferK=()=>{const b=bufDay(dkey(weekSun(0)));return b==null?null:dkey(addDays(weekSun(0),b))};
 const isBufferToday=()=>todayK()===bufferK();
@@ -1986,7 +1987,7 @@ function weekSection(h){const off=S.ui.wk||0,start=weekSun(off),k0=todayK(),W=wo
   return `<section class="sec" id="m-week" ${h}>
     <div class="sec-h"><h2>خطة الأسبوع</h2><span class="sub num">${total} بنود</span></div>
     <button class="bd-btn" data-act="j-go" data-p="bidaya"><span aria-hidden="true">✎</span><span><b>تعديل خطة الأسبوع</b><small>في «بداية»</small></span></button>
-    <div class="wnav"><button class="icon-btn" data-act="wk" data-n="-1" aria-label="الأسبوع السابق" ${off<=0?'disabled':''}>›</button><b>${off===0?'أسبوع العمل':off===1?'الأسبوع الجاي':fmtDay(days[0])+' – '+fmtDay(days[6])}</b><button class="icon-btn" data-act="wk" data-n="1" aria-label="الأسبوع التالي">‹</button></div>
+    <div class="wnav"><button class="icon-btn" data-act="wk" data-n="-1" aria-label="الأسبوع السابق" ${off<=0?'disabled':''}>›</button><b>${off===0?'هذا الأسبوع':off===1?'الأسبوع الجاي':fmtDay(days[0])+' – '+fmtDay(days[6])}</b><button class="icon-btn" data-act="wk" data-n="1" aria-label="الأسبوع التالي">‹</button></div>
     <div class="wk-tools"><button data-act="wk-img"><span aria-hidden="true">🖼️</span><b>صورة الأسبوع</b></button><button data-act="wk-info"><span aria-hidden="true">📊</span><b>إنفوجرافيك</b></button><button data-act="done-log"><span aria-hidden="true">📒</span><b>سجل الإنجاز</b></button></div>
     <div class="wdays">${days.map(d=>{if(d==='rest'){const ts=rest.flatMap(x=>tasksOn(dkey(x)));return `<div class="wday wrest"><div class="wday-h"><b>🌴 ${rest.map(x=>DAYS[x.getDay()]).join(' و')}</b><span class="sub">إجازة</span></div>${ts.length?ts.map(row).join(''):'<p class="sub wempty">ارتاح 🌿</p>'}</div>`}
       const k=dkey(d),ts=tasksOn(k),bf=bufDay(dkey(start))!=null&&k===dkey(addDays(start,bufDay(dkey(start)))),past=k<k0,ld=past?ts.filter(t=>t.status!=='done').length:0;return `<div class="wday ${k===k0?'today':''} ${bf?'wbuf':''} ${past?'wpast':''}">
