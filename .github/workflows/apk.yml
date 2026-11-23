@@ -14,6 +14,12 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug site and service
+        run: |
+          for u in https://dawood-om.github.io/tawazun/ https://dawood-om.github.io/tawazun/manifest.webmanifest https://dawood-om.github.io/tawazun/icons/icon-512.png https://dawood-om.github.io/tawazun/icons/icon-maskable-512.png; do curl -s -o /dev/null -w "%{http_code} %{content_type} $u\n" "$u"; done
+          for u in https://dawood2971.github.io/tawazun-app/manifest.webmanifest; do curl -s -o /dev/null -w "%{http_code} $u\n" "$u"; done
+          curl -sS -m 600 -o ctl.bin -w "control HTTP %{http_code}\n" -H "Content-Type: application/json" --data '{"packageId":"io.github.dawood2971.tawazun","name":"x","launcherName":"x","appVersion":"1.0.1","appVersionCode":1,"host":"https://dawood2971.github.io","startUrl":"/tawazun-app/","webManifestUrl":"https://dawood2971.github.io/tawazun-app/manifest.webmanifest","iconUrl":"https://dawood2971.github.io/tawazun-app/icons/icon-512.png","maskableIconUrl":"https://dawood2971.github.io/tawazun-app/icons/icon-maskable-512.png","themeColor":"#1D4F53","backgroundColor":"#F5F4EF","navigationColor":"#1D4F53","display":"standalone","orientation":"portrait","fallbackType":"customtabs","minSdkVersion":21,"signingMode":"new","signing":{"file":null,"alias":"t","fullName":"D","organization":"D","organizationalUnit":"P","countryCode":"OM","keyPassword":"abcdefgh12","storePassword":"abcdefgh12"}}' https://pwabuilder-cloudapk.azurewebsites.net/generateAppPackage || true
+          head -c 600 ctl.bin | strings | head -5 || true
       - name: Request package from PWABuilder
         run: |
           # A throwaway signing key for each build; it is never stored.
