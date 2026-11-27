@@ -793,7 +793,7 @@ textarea.field{height:auto;min-height:80px;width:100%;resize:vertical}
 .ft-r .ft-n{border:0;background:none;font:inherit;color:inherit;text-align:start;padding:0;cursor:pointer;display:flex;flex-direction:column}.ft-n small{font-size:.7rem;color:var(--muted)}
 .hp{border:1px dashed var(--accent);background:none;color:var(--accent);border-radius:999px;padding:3px 8px;font:inherit;font-size:.8rem;cursor:pointer;justify-self:end;white-space:nowrap}
 .hp.ok{border-style:solid;background:color-mix(in srgb,var(--good) 14%,transparent);border-color:transparent;color:var(--good)}
-.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
+.h-info{margin:0}.h-info p{margin:6px 0 0}.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
 .vault{display:flex;flex-direction:column;gap:8px;text-align:start;font:inherit;color:inherit;cursor:pointer;border-radius:18px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(135deg,var(--surface),var(--accent-soft))}
 .vault .v-top{display:flex;align-items:center;gap:10px}.vault .grow{display:flex;flex-direction:column}.vault b{font-size:1.45rem;font-family:var(--f-display)}.vault b small{font-size:.8rem;font-weight:500}
 .v-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff}
@@ -2687,11 +2687,12 @@ function xaArt(){return `<svg class="xa-art" viewBox="0 0 130 100" aria-hidden="
   <g transform="translate(6 14)"><rect width="30" height="22" rx="6" fill="#2563EB"/><path d="M8 22 l2 6 l5 -6 Z" fill="#2563EB"/><path d="M15 6 v10 M10 11 h10" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></g></svg>`}
 function vaultHTML(c,fundTot,m){const target=sumRows(fixedFor(m)),got=c.hasala,pc=target?Math.min(100,got/target*100):0,open=!!walletUI.hOpen;
   const show=!!ui.hShow,eye=show?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.6 3.6M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/></svg>';
-  return `<div class="vault cash" data-act="h-toggle" role="button" tabindex="0" aria-expanded="${open}" aria-label="الحصالة، اضغط لعرض البنود">${cashFan()}
+  return `<div class="vault cash" data-act="h-toggle" role="button" tabindex="0" aria-expanded="${open}" aria-label="الحصالة، اضغط لشرح القسم">${cashFan()}
     <span class="cash-p"><span class="rs-top"><span class="rs-ic" aria-hidden="true"></span><span class="rs-n">الحصالة</span><span class="rs-pc num">${Math.round(pc)}%</span></span>
       <span class="rs-amt"><b class="rs-big num ${show?'':'hid'}">${show?fmtMoney(fundTot):'<span class="st" aria-label="مخفي">***</span>'} <small>${esc(S.settings.currency)}</small></b><button class="rs-eye ${show?'on':''}" data-act="h-eye" aria-pressed="${show}" aria-label="${show?'إخفاء المبلغ':'إظهار المبلغ'}">${eye}</button></span>
       <span class="rs-bar"><i style="width:${pc}%"></i></span></span></div>
-  ${open?hasalaSection(m):''}`}
+  ${open?`<div class="card note-card h-info"><b>الحصالة: قسم الادخار في غوازي</b><p class="sub">هنا تجمع مبالغ ثابتة كل شهر لأشياء تجي بعدين، مثل صيانة السيارة أو العيد أو السفر. كل بند له رصيد يكبر شهر بعد شهر لين تحتاجه.</p><p class="sub">القسم مفتوح دائماً تحت: أضف بند بزر «+ إضافة بند»، واضغط مبلغ «هذا الشهر» لما تحطه، واضغط اسم البند للصرف منه أو الإيداع فيه أو لتعديله وحذفه.</p></div>`:''}
+  ${hasalaSection(m)}`}
 function ringSegs(c){const g=[['hasala','الحصالة',c.hasala],...BUCKETS.map(b=>[b.k,b.k==='cons'?'المواد الاستهلاكية':b.name,c.sp[b.k]]),['moved','حوّلته للحصالة',c.moved]];return g.filter(x=>x[2]>0)}
 function ringHTML(c){const segs=ringSegs(c),used=c.salary-c.rest,tot=Math.max(c.salary,used)||1,R=60,r=34,gap=.006;let off=0;
   const spin=!ringShown;ringShown=1;
@@ -3192,7 +3193,7 @@ const F={
     if(!(a>=0)||!(b>=0)){toast('اكتب المبالغ أرقاماً');return false}if(fixedFor(wMonth).some(r=>r[0]===n)||hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
     hPlan().fixed.push([n,a]);Object.entries(S.monthFixed||{}).forEach(([k,o])=>{if(k>=wMonth)o[n]=a});
     if(b>0){S.funds=S.funds||{};S.fundPrev=S.fundPrev||{};S.funds[n]=(S.funds[n]||0)+b;S.fundPrev[n]=(S.fundPrev[n]||0)+b}
-    walletUI.hOpen=true;closeSheet();toast(`انضاف «${n}» للحصالة`)},
+    closeSheet();toast(`انضاف «${n}» للحصالة`)},
   'h-ren':(v,f)=>{const o=f.dataset.n,n=(v.n||'').trim();if(!n){toast('اكتب الاسم');return false}if(n===o){closeSheet();return}if(hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
     hRename(o,n);closeSheet();toast(`صار اسمه «${n}»`)},
   'fund-take':(v,f,sub)=>{const n=f.dataset.n,a=num(v.amount),dir=sub&&sub.value==='in'?-1:1;if(!(a>0)){toast('اكتب المبلغ رقماً');return false}S.funds=S.funds||{};S.funds[n]=(S.funds[n]||0)-dir*a;S.fundTx=S.fundTx||[];S.fundTx.push({id:uid(),name:n,amount:dir*a,note:(v.note||'').trim(),date:dkey()});closeSheet();toast(`${dir>0?'صرفت':'أودعت'} ${fmtMoney(a)} ${dir>0?'من':'في'} ${n}. الرصيد ${fmtMoney(S.funds[n])}`)},
