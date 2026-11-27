@@ -793,7 +793,7 @@ textarea.field{height:auto;min-height:80px;width:100%;resize:vertical}
 .ft-r .ft-n{border:0;background:none;font:inherit;color:inherit;text-align:start;padding:0;cursor:pointer;display:flex;flex-direction:column}.ft-n small{font-size:.7rem;color:var(--muted)}
 .hp{border:1px dashed var(--accent);background:none;color:var(--accent);border-radius:999px;padding:3px 8px;font:inherit;font-size:.8rem;cursor:pointer;justify-self:end;white-space:nowrap}
 .hp.ok{border-style:solid;background:color-mix(in srgb,var(--good) 14%,transparent);border-color:transparent;color:var(--good)}
-.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
+.h-tip{margin:2px 4px 8px}.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
 .vault{display:flex;flex-direction:column;gap:8px;text-align:start;font:inherit;color:inherit;cursor:pointer;border-radius:18px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(135deg,var(--surface),var(--accent-soft))}
 .vault .v-top{display:flex;align-items:center;gap:10px}.vault .grow{display:flex;flex-direction:column}.vault b{font-size:1.45rem;font-family:var(--f-display)}.vault b small{font-size:.8rem;font-weight:500}
 .v-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff}
@@ -2492,6 +2492,7 @@ function openExp(id){const e=find(S.expenses,id);if(!e)return;const subs=e.cat==
 function hasalaSection(m){const fx=fixedFor(m),funds=S.funds||{},prev=S.fundPrev||{},paid=hPaidOf(m),taken={};(S.fundTx||[]).forEach(t=>{if(t.amount>0)taken[t.name]=(taken[t.name]||0)+t.amount});
   const sum=f=>fx.reduce((a,[n,x])=>a+f(n,x),0),left=fx.filter(([n,a])=>!(n in paid)&&+a>0).length;
   return `<section class="hlist" id="g-hasala">
+    <p class="sub h-tip">💡 تقدر تضيف بنود للحصالة بزر «+ إضافة بند» تحت الجدول، وتعدّل أي بند أو تحذفه لما تضغط اسمه.</p>
     <div class="card ftable"><div class="ft-h"><span>البند</span><span>سابق</span><span>هذا الشهر</span><span>الرصيد</span></div>
       ${fx.map(([n,a])=>{const ok=n in paid;return `<div class="ft-r"><button class="ft-n" data-act="fund-open" data-n="${esc(n)}">${esc(n)}${taken[n]?`<small class="num">صرفت ${fmtMoney(taken[n])}</small>`:''}</button><span class="num muted">${prev[n]?fmtMoney(prev[n]):'—'}</span><button class="hp ${ok?'ok':''} num" data-act="h-pay" data-n="${esc(n)}" aria-pressed="${ok}">${ok?'✓ ':''}${fmtMoney(ok?paid[n]:+a)}</button><b class="num">${fmtMoney(funds[n]||0)}</b></div>`}).join('')||'<p class="sub ft-empty">ما فيه بنود بعد. اضغط «+ إضافة بند» تحت.</p>'}
       <div class="ft-f"><span>المجموع</span><span class="num">${fmtMoney(sum(n=>prev[n]||0))}</span><span class="num">${fmtMoney(sum(n=>paid[n]||0))}</span><b class="num">${fmtMoney(sum(n=>funds[n]||0))}</b></div></div>
