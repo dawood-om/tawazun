@@ -793,7 +793,7 @@ textarea.field{height:auto;min-height:80px;width:100%;resize:vertical}
 .ft-r .ft-n{border:0;background:none;font:inherit;color:inherit;text-align:start;padding:0;cursor:pointer;display:flex;flex-direction:column}.ft-n small{font-size:.7rem;color:var(--muted)}
 .hp{border:1px dashed var(--accent);background:none;color:var(--accent);border-radius:999px;padding:3px 8px;font:inherit;font-size:.8rem;cursor:pointer;justify-self:end;white-space:nowrap}
 .hp.ok{border-style:solid;background:color-mix(in srgb,var(--good) 14%,transparent);border-color:transparent;color:var(--good)}
-.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
+.h-tip{margin:2px 4px 8px}.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
 .vault{display:flex;flex-direction:column;gap:8px;text-align:start;font:inherit;color:inherit;cursor:pointer;border-radius:18px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(135deg,var(--surface),var(--accent-soft))}
 .vault .v-top{display:flex;align-items:center;gap:10px}.vault .grow{display:flex;flex-direction:column}.vault b{font-size:1.45rem;font-family:var(--f-display)}.vault b small{font-size:.8rem;font-weight:500}
 .v-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff}
@@ -1051,7 +1051,7 @@ button.ring .ring-c b{font-family:var(--f-display);font-size:1.12rem;line-height
 .deck-k{font-size:.8rem;color:var(--muted);min-width:34px;text-align:center}
 @media (prefers-reduced-motion:reduce){.deck>.gcard.cc{transition:none}}
 .ex-tog{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 14px;font:inherit;color:inherit;cursor:pointer;text-align:start;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.ex-tog h2{margin:0;flex:1}.ex-tog .v-chev{transition:transform .25s;font-size:1.2rem;color:var(--muted)}.ex-tog[aria-expanded="true"] .v-chev{transform:rotate(180deg)}.ex-tog+.list{margin-top:10px}
+.ex-tog h2{margin:0;flex:1}.ex-tog .v-chev{transition:transform .25s;font-size:1.2rem;color:var(--muted)}.ex-tog[aria-expanded="true"] .v-chev{transform:rotate(180deg)}.ex-tog+.list,.ex-tog+.sv-body{margin-top:10px}
 .rs-top{display:flex;align-items:center;gap:7px}.rs-ic{display:block;width:40px;height:40px;border-radius:12px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KPHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSIzMCIgZmlsbD0iI0RDRUJGQSIvPgo8ZWxsaXBzZSBjeD0iNjQiIGN5PSIxMTQiIHJ4PSIzNiIgcnk9IjQuNSIgZmlsbD0iI0I5Q0RFMyIvPgo8ZyBzdHJva2U9IiMxRDJCNEYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KPHBhdGggZD0iTTQ4IDk2IGwtMyAxMiBoLTkgcS00IDAgLTItNCBsNS0yIiBmaWxsPSIjQzlENUU2Ii8+CjxwYXRoIGQ9Ik04MCA5NiBsMyAxMiBoOSBxNCAwIDItNCBsLTUtMiIgZmlsbD0iI0M5RDVFNiIvPgo8cGF0aCBkPSJNMjcgNTggcS0xMSA0IC05IDEzIHEyIDYgOSAyIiBmaWxsPSIjQzlENUU2Ii8+CjxwYXRoIGQ9Ik0xMDEgNjAgcTExIC02IDEyIC0xNyIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMTEwIDQwIHE2IDEgNCA3IHEtNCA0IC02IC0xIiBmaWxsPSIjQzlENUU2Ii8+CjxyZWN0IHg9IjI2IiB5PSIyMCIgd2lkdGg9Ijc2IiBoZWlnaHQ9Ijc4IiByeD0iMTQiIGZpbGw9IiNFM0VBRjQiLz4KPHJlY3QgeD0iMzUiIHk9IjI5IiB3aWR0aD0iNTgiIGhlaWdodD0iNjAiIHJ4PSI5IiBmaWxsPSIjQzlENUU2Ii8+CjxjaXJjbGUgY3g9Ijc4IiBjeT0iNzIiIHI9IjgiIGZpbGw9IiNGMkMxNEUiLz4KPHBhdGggZD0iTTc4IDY0IHY0IE04NiA3MiBoLTQgTTc4IDgwIHYtNCBNNzAgNzIgaDQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMi41Ii8+CjxwYXRoIGQ9Ik00MiA2NyB2MTQiIGZpbGw9Im5vbmUiLz4KPC9nPgo8cGF0aCBkPSJNMzMgNDAgbDIwIC0xNiBoMTQgbC0zNCAyOCBaIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuNzUiLz4KPHBhdGggZD0iTTMzIDYwIGw0MCAtMzQgaDcgbC00NyA0MCBaIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuNSIvPgo8Y2lyY2xlIGN4PSI3OCIgY3k9IjcyIiByPSIyLjUiIGZpbGw9IiMxRDJCNEYiLz4KPGVsbGlwc2UgY3g9IjU0IiBjeT0iNDgiIHJ4PSI1IiByeT0iNiIgZmlsbD0iIzFEMkI0RiIvPjxjaXJjbGUgY3g9IjU2IiBjeT0iNDUuNSIgcj0iMS44IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik03MCA0OCBxNSAtNSAxMCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxRDJCNEYiIHN0cm9rZS13aWR0aD0iMy42IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU4IDU2IHE2IDYgMTIgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMUQyQjRGIiBzdHJva2Utd2lkdGg9IjMuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxlbGxpcHNlIGN4PSI0NiIgY3k9IjU1IiByeD0iNSIgcnk9IjMiIGZpbGw9IiNGMjdDOUMiIG9wYWNpdHk9Ii41Ii8+PGVsbGlwc2UgY3g9IjgzIiBjeT0iNTUiIHJ4PSI1IiByeT0iMyIgZmlsbD0iI0YyN0M5QyIgb3BhY2l0eT0iLjUiLz4KPC9zdmc+) center/cover no-repeat;box-shadow:0 3px 8px rgba(0,0,0,.3);flex:none}
 .rs-n{flex:1;font-weight:700;font-size:.95rem}.rs-pc{font-size:.82rem;font-weight:700;color:#1B8A5A;background:rgba(43,170,110,.14);border-radius:99px;padding:1px 8px}
 .rs-big{font-family:var(--f-display);font-size:1.7rem;line-height:1.1;color:#1D2B4F}.rs-big small{font-size:.8rem;font-weight:500;opacity:.8}
@@ -2492,11 +2492,12 @@ function openExp(id){const e=find(S.expenses,id);if(!e)return;const subs=e.cat==
 function hasalaSection(m){const fx=fixedFor(m),funds=S.funds||{},prev=S.fundPrev||{},paid=hPaidOf(m),taken={};(S.fundTx||[]).forEach(t=>{if(t.amount>0)taken[t.name]=(taken[t.name]||0)+t.amount});
   const sum=f=>fx.reduce((a,[n,x])=>a+f(n,x),0),left=fx.filter(([n,a])=>!(n in paid)&&+a>0).length;
   return `<section class="hlist" id="g-hasala">
+    <p class="sub h-tip">💡 تقدر تضيف بنود للحصالة بزر «+ إضافة بند» تحت الجدول، وتعدّل أي بند أو تحذفه لما تضغط اسمه.</p>
     <div class="card ftable"><div class="ft-h"><span>البند</span><span>سابق</span><span>هذا الشهر</span><span>الرصيد</span></div>
-      ${fx.map(([n,a])=>{const ok=n in paid;return `<div class="ft-r"><button class="ft-n" data-act="fund-open" data-n="${esc(n)}">${esc(n)}${taken[n]?`<small class="num">صرفت ${fmtMoney(taken[n])}</small>`:''}</button><span class="num muted">${prev[n]?fmtMoney(prev[n]):'—'}</span><button class="hp ${ok?'ok':''} num" data-act="h-pay" data-n="${esc(n)}" aria-pressed="${ok}">${ok?'✓ ':''}${fmtMoney(ok?paid[n]:+a)}</button><b class="num">${fmtMoney(funds[n]||0)}</b></div>`}).join('')}
+      ${fx.map(([n,a])=>{const ok=n in paid;return `<div class="ft-r"><button class="ft-n" data-act="fund-open" data-n="${esc(n)}">${esc(n)}${taken[n]?`<small class="num">صرفت ${fmtMoney(taken[n])}</small>`:''}</button><span class="num muted">${prev[n]?fmtMoney(prev[n]):'—'}</span><button class="hp ${ok?'ok':''} num" data-act="h-pay" data-n="${esc(n)}" aria-pressed="${ok}">${ok?'✓ ':''}${fmtMoney(ok?paid[n]:+a)}</button><b class="num">${fmtMoney(funds[n]||0)}</b></div>`}).join('')||'<p class="sub ft-empty">ما فيه بنود بعد. اضغط «+ إضافة بند» تحت.</p>'}
       <div class="ft-f"><span>المجموع</span><span class="num">${fmtMoney(sum(n=>prev[n]||0))}</span><span class="num">${fmtMoney(sum(n=>paid[n]||0))}</span><b class="num">${fmtMoney(sum(n=>funds[n]||0))}</b></div></div>
-    <div class="ft-tools">${left?`<button class="btn sm" data-act="h-payall">ادفع الباقي (${left})</button>`:''}<button class="link" data-act="funds-edit">المبالغ السابقة</button><button class="link" data-act="fixed-month">مبالغ هذا الشهر</button></div>
-    <p class="sub">اضغط مبلغ «هذا الشهر» لما تدفعه، واضغط اسم البند للصرف منه أو الإيداع فيه.</p></section>`}
+    <div class="ft-tools"><button class="btn line sm" data-act="h-add">+ إضافة بند</button>${left?`<button class="btn sm" data-act="h-payall">ادفع الباقي (${left})</button>`:''}<button class="link" data-act="funds-edit">المبالغ السابقة</button><button class="link" data-act="fixed-month">مبالغ هذا الشهر</button></div>
+    <p class="sub">اضغط مبلغ «هذا الشهر» لما تدفعه، واضغط اسم البند للصرف منه أو الإيداع فيه أو لتعديله وحذفه.</p></section>`}
 function openFixedMonth(){const m=wMonth,fx=fixedFor(m);
   openSheet(`<form data-form="fixed-month" class="plan-f"><p class="sub">في الظروف الطارئة غيّر مبلغ أي بند لهذا الشهر بس. الفرق ينعكس على رصيد البند.</p>
     ${fx.map(([n,a])=>`<div class="pf-row"><span class="pf-n">${esc(n)}</span><input class="field num" name="a" data-n="${esc(n)}" inputmode="decimal" value="${+a}" aria-label="${esc(n)}"></div>`).join('')}
@@ -2620,7 +2621,24 @@ function openFund(n){const bal=(S.funds||{})[n]||0,tx=(S.fundTx||[]).filter(t=>t
     <p class="pf-h">صرف أو إيداع</p>
     <form data-form="fund-take" data-n="${esc(n)}"><div class="add"><input name="amount" inputmode="decimal" placeholder="المبلغ" required autocomplete="off"><input name="note" placeholder="لأي شي؟" autocomplete="off"></div>
       <div class="add"><button class="btn" name="dir" value="out">صرفت منه</button><button class="btn line" name="dir" value="in">أودعت فيه</button></div></form>
-    ${tx.length?`<div class="list" style="margin-top:10px">${tx.map(t=>`<div class="item"><div class="grow">${esc(t.note||(t.amount<0?'إيداع':'صرف'))}<div class="sub num">${fmtDay(parseD(t.date))}</div></div><b class="num">${t.amount<0?'+':'−'}${fmtMoney(Math.abs(t.amount))}</b></div>`).join('')}</div>`:''}`,n)}
+    ${tx.length?`<div class="list" style="margin-top:10px">${tx.map(t=>`<div class="item"><div class="grow">${esc(t.note||(t.amount<0?'إيداع':'صرف'))}<div class="sub num">${fmtDay(parseD(t.date))}</div></div><b class="num">${t.amount<0?'+':'−'}${fmtMoney(Math.abs(t.amount))}</b></div>`).join('')}</div>`:''}
+    <p class="pf-h">اسم البند</p>
+    <form data-form="h-ren" data-n="${esc(n)}"><div class="add"><input name="n" value="${esc(n)}" aria-label="اسم البند" required autocomplete="off"><button class="btn line">غيّر الاسم</button></div></form>
+    <div class="add" style="margin-top:10px"><button type="button" class="btn danger" data-act="h-del" data-n="${esc(n)}">احذف البند</button></div>
+    <p class="sub">${bal?`الحذف يشيل البند من الحصالة من هذا الشهر وطالع، ويشيل رصيده (${fmtMoney(bal)}). `:'الحذف يشيل البند من الحصالة من هذا الشهر وطالع. '}الشهور الماضية تبقى مثل ما هي.</p>`,n)}
+function openHAdd(){openSheet(`<form data-form="h-add" class="plan-f">
+    <div class="fld"><label>اسم البند</label><input class="field" name="n" placeholder="مثال: صيانة السيارة" required autocomplete="off"></div>
+    <div class="fld"><label>كم تحط فيه كل شهر؟</label><input class="field num" name="a" inputmode="decimal" placeholder="0"></div>
+    <div class="fld"><label>كم فيه الحين؟ (اختياري)</label><input class="field num" name="b" inputmode="decimal" placeholder="0"></div>
+    <p class="sub">المبلغ الشهري ينضاف لحصالة هذا الشهر والشهور الجاية. اللي فيه الحين ينضاف لرصيده.</p>
+    <div class="add"><button class="btn">أضف البند</button></div></form>`,'بند جديد')}
+const hPlan=()=>{if(!S.plan)S.plan=JSON.parse(JSON.stringify(PLAN_DEF));return S.plan};
+const hNames=()=>new Set([...hPlan().fixed.map(r=>r[0]),...Object.entries(S.monthFixed||{}).filter(([k])=>k>=wMonth).flatMap(([,o])=>Object.keys(o)),...Object.keys(S.funds||{})]);
+/* rename a حصالة item everywhere it is stored by name, so its history and balance follow it */
+function hRename(o,n){const mv=x=>{if(x&&o in x){x[n]=x[o];delete x[o]}};
+  hPlan().fixed.forEach(r=>{if(r[0]===o)r[0]=n});Object.values(S.monthFixed||{}).forEach(mv);Object.values(S.hPaid||{}).forEach(mv);mv(S.funds);mv(S.fundPrev);
+  (S.fundTx||[]).forEach(t=>{if(t.name===o)t.name=n});Object.values(S.moved||{}).forEach(l=>l.forEach(x=>{if(x.fund===o)x.fund=n}));
+  (S.events||[]).concat(S.evTrash||[]).forEach(e=>{if(e.fund===o)e.fund=n;(e.spends||[]).forEach(x=>{if(x.fund===o)x.fund=n})})}
 /* last 7 days against the safe weekly pace of الالتزامات, and where the leak is */
 function weekReport(c,dim){const now=new Date(),from=dkey(addDays(now,-6)),to=dkey(now);
   const wk=S.expenses.filter(e=>e.date>=from&&e.date<=to),tot=wk.reduce((a,e)=>a+e.amount,0),cDaily=c.ex.filter(isDaily).reduce((a,e)=>a+e.amount,0),safe=Math.max(0,c.rest+cDaily)/dim*7;
@@ -2741,12 +2759,12 @@ function pMahfazti(){
   </section>
 
   <section class="sec">
-    <div class="sec-h"><h2>الادخار</h2><span class="sub num">المجموع ${money(saved)}</span></div>
-    <div class="stack">${S.goals.map(g=>{const p=g.target?g.saved/g.target*100:0;return `<div class="card goal"><div class="sec-h" style="margin:0"><b>${esc(g.name)}</b><span style="display:flex;align-items:center;gap:4px"><span class="pill ${p>=100?'good':'acc'} num">${Math.round(p)}%</span>${del('goal-del',g.id)}</span></div>
+    <button class="ex-tog" data-act="sv-toggle" aria-expanded="${!!walletUI.svOpen}"><h2>الادخار</h2><span class="sub num">المجموع ${money(saved)}</span><span class="v-chev" aria-hidden="true">⌄</span></button>
+    ${walletUI.svOpen?`<div class="stack sv-body">${S.goals.map(g=>{const p=g.target?g.saved/g.target*100:0;return `<div class="card goal"><div class="sec-h" style="margin:0"><b>${esc(g.name)}</b><span style="display:flex;align-items:center;gap:4px"><span class="pill ${p>=100?'good':'acc'} num">${Math.round(p)}%</span>${del('goal-del',g.id)}</span></div>
       <div class="num small">${money(g.saved)} <span class="muted">من ${money(g.target)}</span></div>${bar(p,'acc')}
       ${p<100?`<p class="sub num">باقي ${money(g.target-g.saved)}</p>`:'<p class="sub">وصلت للهدف، مبروك</p>'}
       <form class="add" data-form="deposit" data-id="${g.id}"><input name="amount" inputmode="decimal" placeholder="مبلغ" required autocomplete="off"><button class="btn line" style="height:46px" name="dir" value="1">أودع</button><button class="btn line" style="height:46px" name="dir" value="-1">اسحب</button></form></div>`}).join('')||'<div class="list"><div class="empty">أضف هدف ادخار، مثل صندوق طوارئ أو سفرة.</div></div>'}</div>
-    <form class="add" data-form="goal"><input name="name" placeholder="هدف جديد" required autocomplete="off"><input class="sm" name="target" inputmode="decimal" placeholder="المبلغ المطلوب" required autocomplete="off"><button class="btn">أضف</button></form>
+    <form class="add" data-form="goal"><input name="name" placeholder="هدف جديد" required autocomplete="off"><input class="sm" name="target" inputmode="decimal" placeholder="المبلغ المطلوب" required autocomplete="off"><button class="btn">أضف</button></form>`:''}
   </section>
   <div class="vwrap" style="margin-top:22px">${vaultHTML(c,fundTot,m)}</div>`;
 }
@@ -3071,7 +3089,12 @@ const A={
   'fixed-month':()=>openFixedMonth(),
   'funds-edit':()=>openFundsEdit(),
   'fund-open':d=>openFund(d.n),
+  'h-add':()=>openHAdd(),
+  'h-del':(d,el)=>{if(!el.dataset.armed){el.dataset.armed='1';el.textContent='متأكد؟ اضغط مرة ثانية';return}const n=d.n,m=wMonth;
+    hPlan().fixed=S.plan.fixed.filter(r=>r[0]!==n);Object.entries(S.monthFixed||{}).forEach(([k,o])=>{if(k>=m)delete o[n]});if(S.funds)delete S.funds[n];if(S.fundPrev)delete S.fundPrev[n];
+    closeSheet();commit();toast(`انحذف «${n}» من الحصالة`)},
   'ex-toggle':()=>{walletUI.exOpen=!walletUI.exOpen;render()},
+  'sv-toggle':()=>{walletUI.svOpen=!walletUI.svOpen;render()},
   'ev-new':()=>openEvent(null),
   'deck-go':d=>{const k=$('#deck');if(k&&k.deckGo)k.deckGo(+d.d)},
   'ev-dadd':()=>{const w=$('#ev-dates');w.insertAdjacentHTML('beforeend',evDateRow('',true));enhanceDates(w);const i=w.lastElementChild.querySelector('input');try{i.showPicker()}catch(e){}},
@@ -3167,6 +3190,13 @@ const F={
     Object.assign(z,{due,prev});closeSheet();toast('انحفظت بيانات الزكاة')},
   'rest-move':v=>{const m=wMonth,a=num(v.amount),n=v.fund,c=monthCalc(m);if(!(a>0)){toast('اكتب المبلغ رقماً');return false}if(a>c.rest+.0005){toast(`المتبقي ${fmtMoney(c.rest)} بس`);return false}
     const id=uid();S.moved=S.moved||{};(S.moved[m]=S.moved[m]||[]).push({id,fund:n,amount:a,date:dkey()});S.funds=S.funds||{};S.funds[n]=(S.funds[n]||0)+a;S.fundTx=S.fundTx||[];S.fundTx.push({id,name:n,amount:-a,note:'من متبقي '+salaryName(m),date:dkey()});closeSheet();toast(`حوّلت ${fmtMoney(a)} إلى «${n}». رصيده ${fmtMoney(S.funds[n])}`)},
+  'h-add':v=>{const n=(v.n||'').trim(),a=(v.a||'').trim()?num(v.a):0,b=(v.b||'').trim()?num(v.b):0;if(!n){toast('اكتب اسم البند');return false}
+    if(!(a>=0)||!(b>=0)){toast('اكتب المبالغ أرقاماً');return false}if(fixedFor(wMonth).some(r=>r[0]===n)||hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
+    hPlan().fixed.push([n,a]);Object.entries(S.monthFixed||{}).forEach(([k,o])=>{if(k>=wMonth)o[n]=a});
+    if(b>0){S.funds=S.funds||{};S.fundPrev=S.fundPrev||{};S.funds[n]=(S.funds[n]||0)+b;S.fundPrev[n]=(S.fundPrev[n]||0)+b}
+    walletUI.hOpen=true;closeSheet();toast(`انضاف «${n}» للحصالة`)},
+  'h-ren':(v,f)=>{const o=f.dataset.n,n=(v.n||'').trim();if(!n){toast('اكتب الاسم');return false}if(n===o){closeSheet();return}if(hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
+    hRename(o,n);closeSheet();toast(`صار اسمه «${n}»`)},
   'fund-take':(v,f,sub)=>{const n=f.dataset.n,a=num(v.amount),dir=sub&&sub.value==='in'?-1:1;if(!(a>0)){toast('اكتب المبلغ رقماً');return false}S.funds=S.funds||{};S.funds[n]=(S.funds[n]||0)-dir*a;S.fundTx=S.fundTx||[];S.fundTx.push({id:uid(),name:n,amount:dir*a,note:(v.note||'').trim(),date:dkey()});closeSheet();toast(`${dir>0?'صرفت':'أودعت'} ${fmtMoney(a)} ${dir>0?'من':'في'} ${n}. الرصيد ${fmtMoney(S.funds[n])}`)},
   payday:v=>{const a=num(v.amount);if(!(a>0)){toast('اكتب الراتب رقماً');return false}applyMonth(wMonth,a);toast(`سجّلت ${salaryName(wMonth)} ${fmtMoney(a)} وتجنّبت الحصالة`)},
   'ev-spend':(v,f)=>{const e=find(S.events,f.dataset.id),a=num(v.amount);if(!e)return false;if(!(a>0)){toast('اكتب المبلغ رقماً');return false}
@@ -3188,7 +3218,7 @@ const F={
     if(v.fund==='__new'){S.plan=S.plan||JSON.parse(JSON.stringify(PLAN_DEF));if(!S.plan.fixed.some(r=>r[0]===e.name))S.plan.fixed.push([e.name,0]);e.fund=e.name}else e.fund=v.fund||'';
     closeSheet();toast('انحفظت المناسبة')},
   plan:(v,f)=>{const sal=num(v.salary);if(!(sal>0)){toast('اكتب الراتب رقماً');return false}const bk={rashan:num(v.rashan||'0')||0,cons:num(v.cons||'0')||0,commit:v.commit===''?null:num(v.commit)};
-    const read=k=>[...f.querySelectorAll(`[data-row="${k}"]`)].map(r=>[r.querySelector('[name=n]').value.trim(),num(r.querySelector('[name=a]').value)]).filter(([n,a])=>n&&a>0);
+    const read=k=>[...f.querySelectorAll(`[data-row="${k}"]`)].map(r=>[r.querySelector('[name=n]').value.trim(),num(r.querySelector('[name=a]').value.trim()||'0')]).filter(([n,a])=>n&&(k==='fixed'?a>=0:a>0));
     S.plan={salary:sal,jamiya:(S.plan||PLAN_DEF).jamiya??PLAN_DEF.jamiya,mine:mineCap(),gifts:giftsOf(),fixed:read('fixed'),ration:read('ration'),buckets:bk};const mf=(S.monthFixed||{})[wMonth];if(mf)S.plan.fixed.forEach(([n,a])=>{if(!(n in mf))mf[n]=a});closeSheet();toast('انحفظت الإعدادات')},
   budget:v=>{const b=num(v.budget);if(!(b>=0)){toast('اكتب الميزانية رقماً');return false}S.budgets[wMonth]=b},
   'rc-save':v=>rcApply(v.raw,true),
