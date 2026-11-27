@@ -793,7 +793,7 @@ textarea.field{height:auto;min-height:80px;width:100%;resize:vertical}
 .ft-r .ft-n{border:0;background:none;font:inherit;color:inherit;text-align:start;padding:0;cursor:pointer;display:flex;flex-direction:column}.ft-n small{font-size:.7rem;color:var(--muted)}
 .hp{border:1px dashed var(--accent);background:none;color:var(--accent);border-radius:999px;padding:3px 8px;font:inherit;font-size:.8rem;cursor:pointer;justify-self:end;white-space:nowrap}
 .hp.ok{border-style:solid;background:color-mix(in srgb,var(--good) 14%,transparent);border-color:transparent;color:var(--good)}
-.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
+.ft-empty{padding:12px 0;margin:0}.ft-tools .btn.sm{padding:6px 12px;font-size:.85rem}
 .vault{display:flex;flex-direction:column;gap:8px;text-align:start;font:inherit;color:inherit;cursor:pointer;border-radius:18px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(135deg,var(--surface),var(--accent-soft))}
 .vault .v-top{display:flex;align-items:center;gap:10px}.vault .grow{display:flex;flex-direction:column}.vault b{font-size:1.45rem;font-family:var(--f-display)}.vault b small{font-size:.8rem;font-weight:500}
 .v-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff}
@@ -2493,10 +2493,10 @@ function hasalaSection(m){const fx=fixedFor(m),funds=S.funds||{},prev=S.fundPrev
   const sum=f=>fx.reduce((a,[n,x])=>a+f(n,x),0),left=fx.filter(([n,a])=>!(n in paid)&&+a>0).length;
   return `<section class="hlist" id="g-hasala">
     <div class="card ftable"><div class="ft-h"><span>البند</span><span>سابق</span><span>هذا الشهر</span><span>الرصيد</span></div>
-      ${fx.map(([n,a])=>{const ok=n in paid;return `<div class="ft-r"><button class="ft-n" data-act="fund-open" data-n="${esc(n)}">${esc(n)}${taken[n]?`<small class="num">صرفت ${fmtMoney(taken[n])}</small>`:''}</button><span class="num muted">${prev[n]?fmtMoney(prev[n]):'—'}</span><button class="hp ${ok?'ok':''} num" data-act="h-pay" data-n="${esc(n)}" aria-pressed="${ok}">${ok?'✓ ':''}${fmtMoney(ok?paid[n]:+a)}</button><b class="num">${fmtMoney(funds[n]||0)}</b></div>`}).join('')}
+      ${fx.map(([n,a])=>{const ok=n in paid;return `<div class="ft-r"><button class="ft-n" data-act="fund-open" data-n="${esc(n)}">${esc(n)}${taken[n]?`<small class="num">صرفت ${fmtMoney(taken[n])}</small>`:''}</button><span class="num muted">${prev[n]?fmtMoney(prev[n]):'—'}</span><button class="hp ${ok?'ok':''} num" data-act="h-pay" data-n="${esc(n)}" aria-pressed="${ok}">${ok?'✓ ':''}${fmtMoney(ok?paid[n]:+a)}</button><b class="num">${fmtMoney(funds[n]||0)}</b></div>`}).join('')||'<p class="sub ft-empty">ما فيه بنود بعد. اضغط «+ إضافة بند» تحت.</p>'}
       <div class="ft-f"><span>المجموع</span><span class="num">${fmtMoney(sum(n=>prev[n]||0))}</span><span class="num">${fmtMoney(sum(n=>paid[n]||0))}</span><b class="num">${fmtMoney(sum(n=>funds[n]||0))}</b></div></div>
-    <div class="ft-tools">${left?`<button class="btn sm" data-act="h-payall">ادفع الباقي (${left})</button>`:''}<button class="link" data-act="funds-edit">المبالغ السابقة</button><button class="link" data-act="fixed-month">مبالغ هذا الشهر</button></div>
-    <p class="sub">اضغط مبلغ «هذا الشهر» لما تدفعه، واضغط اسم البند للصرف منه أو الإيداع فيه.</p></section>`}
+    <div class="ft-tools"><button class="btn line sm" data-act="h-add">+ إضافة بند</button>${left?`<button class="btn sm" data-act="h-payall">ادفع الباقي (${left})</button>`:''}<button class="link" data-act="funds-edit">المبالغ السابقة</button><button class="link" data-act="fixed-month">مبالغ هذا الشهر</button></div>
+    <p class="sub">اضغط مبلغ «هذا الشهر» لما تدفعه، واضغط اسم البند للصرف منه أو الإيداع فيه أو لتعديله وحذفه.</p></section>`}
 function openFixedMonth(){const m=wMonth,fx=fixedFor(m);
   openSheet(`<form data-form="fixed-month" class="plan-f"><p class="sub">في الظروف الطارئة غيّر مبلغ أي بند لهذا الشهر بس. الفرق ينعكس على رصيد البند.</p>
     ${fx.map(([n,a])=>`<div class="pf-row"><span class="pf-n">${esc(n)}</span><input class="field num" name="a" data-n="${esc(n)}" inputmode="decimal" value="${+a}" aria-label="${esc(n)}"></div>`).join('')}
@@ -2620,7 +2620,24 @@ function openFund(n){const bal=(S.funds||{})[n]||0,tx=(S.fundTx||[]).filter(t=>t
     <p class="pf-h">صرف أو إيداع</p>
     <form data-form="fund-take" data-n="${esc(n)}"><div class="add"><input name="amount" inputmode="decimal" placeholder="المبلغ" required autocomplete="off"><input name="note" placeholder="لأي شي؟" autocomplete="off"></div>
       <div class="add"><button class="btn" name="dir" value="out">صرفت منه</button><button class="btn line" name="dir" value="in">أودعت فيه</button></div></form>
-    ${tx.length?`<div class="list" style="margin-top:10px">${tx.map(t=>`<div class="item"><div class="grow">${esc(t.note||(t.amount<0?'إيداع':'صرف'))}<div class="sub num">${fmtDay(parseD(t.date))}</div></div><b class="num">${t.amount<0?'+':'−'}${fmtMoney(Math.abs(t.amount))}</b></div>`).join('')}</div>`:''}`,n)}
+    ${tx.length?`<div class="list" style="margin-top:10px">${tx.map(t=>`<div class="item"><div class="grow">${esc(t.note||(t.amount<0?'إيداع':'صرف'))}<div class="sub num">${fmtDay(parseD(t.date))}</div></div><b class="num">${t.amount<0?'+':'−'}${fmtMoney(Math.abs(t.amount))}</b></div>`).join('')}</div>`:''}
+    <p class="pf-h">اسم البند</p>
+    <form data-form="h-ren" data-n="${esc(n)}"><div class="add"><input name="n" value="${esc(n)}" aria-label="اسم البند" required autocomplete="off"><button class="btn line">غيّر الاسم</button></div></form>
+    <div class="add" style="margin-top:10px"><button type="button" class="btn danger" data-act="h-del" data-n="${esc(n)}">احذف البند</button></div>
+    <p class="sub">${bal?`الحذف يشيل البند من الحصالة من هذا الشهر وطالع، ويشيل رصيده (${fmtMoney(bal)}). `:'الحذف يشيل البند من الحصالة من هذا الشهر وطالع. '}الشهور الماضية تبقى مثل ما هي.</p>`,n)}
+function openHAdd(){openSheet(`<form data-form="h-add" class="plan-f">
+    <div class="fld"><label>اسم البند</label><input class="field" name="n" placeholder="مثال: صيانة السيارة" required autocomplete="off"></div>
+    <div class="fld"><label>كم تحط فيه كل شهر؟</label><input class="field num" name="a" inputmode="decimal" placeholder="0"></div>
+    <div class="fld"><label>كم فيه الحين؟ (اختياري)</label><input class="field num" name="b" inputmode="decimal" placeholder="0"></div>
+    <p class="sub">المبلغ الشهري ينضاف لحصالة هذا الشهر والشهور الجاية. اللي فيه الحين ينضاف لرصيده.</p>
+    <div class="add"><button class="btn">أضف البند</button></div></form>`,'بند جديد')}
+const hPlan=()=>{if(!S.plan)S.plan=JSON.parse(JSON.stringify(PLAN_DEF));return S.plan};
+const hNames=()=>new Set([...hPlan().fixed.map(r=>r[0]),...Object.entries(S.monthFixed||{}).filter(([k])=>k>=wMonth).flatMap(([,o])=>Object.keys(o)),...Object.keys(S.funds||{})]);
+/* rename a حصالة item everywhere it is stored by name, so its history and balance follow it */
+function hRename(o,n){const mv=x=>{if(x&&o in x){x[n]=x[o];delete x[o]}};
+  hPlan().fixed.forEach(r=>{if(r[0]===o)r[0]=n});Object.values(S.monthFixed||{}).forEach(mv);Object.values(S.hPaid||{}).forEach(mv);mv(S.funds);mv(S.fundPrev);
+  (S.fundTx||[]).forEach(t=>{if(t.name===o)t.name=n});Object.values(S.moved||{}).forEach(l=>l.forEach(x=>{if(x.fund===o)x.fund=n}));
+  (S.events||[]).concat(S.evTrash||[]).forEach(e=>{if(e.fund===o)e.fund=n;(e.spends||[]).forEach(x=>{if(x.fund===o)x.fund=n})})}
 /* last 7 days against the safe weekly pace of الالتزامات, and where the leak is */
 function weekReport(c,dim){const now=new Date(),from=dkey(addDays(now,-6)),to=dkey(now);
   const wk=S.expenses.filter(e=>e.date>=from&&e.date<=to),tot=wk.reduce((a,e)=>a+e.amount,0),cDaily=c.ex.filter(isDaily).reduce((a,e)=>a+e.amount,0),safe=Math.max(0,c.rest+cDaily)/dim*7;
@@ -3071,6 +3088,10 @@ const A={
   'fixed-month':()=>openFixedMonth(),
   'funds-edit':()=>openFundsEdit(),
   'fund-open':d=>openFund(d.n),
+  'h-add':()=>openHAdd(),
+  'h-del':(d,el)=>{if(!el.dataset.armed){el.dataset.armed='1';el.textContent='متأكد؟ اضغط مرة ثانية';return}const n=d.n,m=wMonth;
+    hPlan().fixed=S.plan.fixed.filter(r=>r[0]!==n);Object.entries(S.monthFixed||{}).forEach(([k,o])=>{if(k>=m)delete o[n]});if(S.funds)delete S.funds[n];if(S.fundPrev)delete S.fundPrev[n];
+    closeSheet();commit();toast(`انحذف «${n}» من الحصالة`)},
   'ex-toggle':()=>{walletUI.exOpen=!walletUI.exOpen;render()},
   'ev-new':()=>openEvent(null),
   'deck-go':d=>{const k=$('#deck');if(k&&k.deckGo)k.deckGo(+d.d)},
@@ -3167,6 +3188,13 @@ const F={
     Object.assign(z,{due,prev});closeSheet();toast('انحفظت بيانات الزكاة')},
   'rest-move':v=>{const m=wMonth,a=num(v.amount),n=v.fund,c=monthCalc(m);if(!(a>0)){toast('اكتب المبلغ رقماً');return false}if(a>c.rest+.0005){toast(`المتبقي ${fmtMoney(c.rest)} بس`);return false}
     const id=uid();S.moved=S.moved||{};(S.moved[m]=S.moved[m]||[]).push({id,fund:n,amount:a,date:dkey()});S.funds=S.funds||{};S.funds[n]=(S.funds[n]||0)+a;S.fundTx=S.fundTx||[];S.fundTx.push({id,name:n,amount:-a,note:'من متبقي '+salaryName(m),date:dkey()});closeSheet();toast(`حوّلت ${fmtMoney(a)} إلى «${n}». رصيده ${fmtMoney(S.funds[n])}`)},
+  'h-add':v=>{const n=(v.n||'').trim(),a=(v.a||'').trim()?num(v.a):0,b=(v.b||'').trim()?num(v.b):0;if(!n){toast('اكتب اسم البند');return false}
+    if(!(a>=0)||!(b>=0)){toast('اكتب المبالغ أرقاماً');return false}if(fixedFor(wMonth).some(r=>r[0]===n)||hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
+    hPlan().fixed.push([n,a]);Object.entries(S.monthFixed||{}).forEach(([k,o])=>{if(k>=wMonth)o[n]=a});
+    if(b>0){S.funds=S.funds||{};S.fundPrev=S.fundPrev||{};S.funds[n]=(S.funds[n]||0)+b;S.fundPrev[n]=(S.fundPrev[n]||0)+b}
+    walletUI.hOpen=true;closeSheet();toast(`انضاف «${n}» للحصالة`)},
+  'h-ren':(v,f)=>{const o=f.dataset.n,n=(v.n||'').trim();if(!n){toast('اكتب الاسم');return false}if(n===o){closeSheet();return}if(hNames().has(n)){toast(`فيه بند باسم «${n}» من قبل`);return false}
+    hRename(o,n);closeSheet();toast(`صار اسمه «${n}»`)},
   'fund-take':(v,f,sub)=>{const n=f.dataset.n,a=num(v.amount),dir=sub&&sub.value==='in'?-1:1;if(!(a>0)){toast('اكتب المبلغ رقماً');return false}S.funds=S.funds||{};S.funds[n]=(S.funds[n]||0)-dir*a;S.fundTx=S.fundTx||[];S.fundTx.push({id:uid(),name:n,amount:dir*a,note:(v.note||'').trim(),date:dkey()});closeSheet();toast(`${dir>0?'صرفت':'أودعت'} ${fmtMoney(a)} ${dir>0?'من':'في'} ${n}. الرصيد ${fmtMoney(S.funds[n])}`)},
   payday:v=>{const a=num(v.amount);if(!(a>0)){toast('اكتب الراتب رقماً');return false}applyMonth(wMonth,a);toast(`سجّلت ${salaryName(wMonth)} ${fmtMoney(a)} وتجنّبت الحصالة`)},
   'ev-spend':(v,f)=>{const e=find(S.events,f.dataset.id),a=num(v.amount);if(!e)return false;if(!(a>0)){toast('اكتب المبلغ رقماً');return false}
@@ -3188,7 +3216,7 @@ const F={
     if(v.fund==='__new'){S.plan=S.plan||JSON.parse(JSON.stringify(PLAN_DEF));if(!S.plan.fixed.some(r=>r[0]===e.name))S.plan.fixed.push([e.name,0]);e.fund=e.name}else e.fund=v.fund||'';
     closeSheet();toast('انحفظت المناسبة')},
   plan:(v,f)=>{const sal=num(v.salary);if(!(sal>0)){toast('اكتب الراتب رقماً');return false}const bk={rashan:num(v.rashan||'0')||0,cons:num(v.cons||'0')||0,commit:v.commit===''?null:num(v.commit)};
-    const read=k=>[...f.querySelectorAll(`[data-row="${k}"]`)].map(r=>[r.querySelector('[name=n]').value.trim(),num(r.querySelector('[name=a]').value)]).filter(([n,a])=>n&&a>0);
+    const read=k=>[...f.querySelectorAll(`[data-row="${k}"]`)].map(r=>[r.querySelector('[name=n]').value.trim(),num(r.querySelector('[name=a]').value.trim()||'0')]).filter(([n,a])=>n&&(k==='fixed'?a>=0:a>0));
     S.plan={salary:sal,jamiya:(S.plan||PLAN_DEF).jamiya??PLAN_DEF.jamiya,mine:mineCap(),gifts:giftsOf(),fixed:read('fixed'),ration:read('ration'),buckets:bk};const mf=(S.monthFixed||{})[wMonth];if(mf)S.plan.fixed.forEach(([n,a])=>{if(!(n in mf))mf[n]=a});closeSheet();toast('انحفظت الإعدادات')},
   budget:v=>{const b=num(v.budget);if(!(b>=0)){toast('اكتب الميزانية رقماً');return false}S.budgets[wMonth]=b},
   'rc-save':v=>rcApply(v.raw,true),
